@@ -1,35 +1,28 @@
 <!DOCTYPE html>
 <html lang="en" dir="ltr">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Customer Happiness</title>
-  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;600&display=swap" rel="stylesheet" />
-  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Arabic:wght@400;600&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;600&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Arabic:wght@400;600&display=swap" rel="stylesheet">
   <style>
-    html, body {
-      margin: 0;
-      padding: 0;
-      height: 100%;
+    body {
       font-family: 'IBM Plex Sans', sans-serif;
       background-color: #ffffff;
-    }
-
-    body {
+      margin: 0;
+      padding: 0;
       display: flex;
       justify-content: center;
       align-items: center;
-      overflow: hidden;
+      min-height: 100vh;
     }
-
     .card {
       width: 100%;
-      max-width: 480px;
+      max-width: 700px;
       padding: 2rem;
       text-align: center;
-      box-sizing: border-box;
     }
-
     .logo {
       width: 100%;
       max-width: 380px;
@@ -37,63 +30,56 @@
       margin: 0 auto 1.5rem auto;
       display: block;
     }
-
     .emoji-box {
-      display: flex;
-      justify-content: space-between;
-      margin: 1.5rem 0;
       font-size: 2.5rem;
+      margin: 1.5rem 0;
+      display: flex;
+      justify-content: center;
+      gap: 1.2rem;
     }
-
-    .emoji {
+    .emoji-option {
       display: flex;
       flex-direction: column;
       align-items: center;
       cursor: pointer;
       transition: transform 0.2s;
-      flex: 1;
+      font-family: 'IBM Plex Sans', sans-serif;
+      font-size: 0.9rem;
     }
-
-    .emoji:hover {
+    .emoji-option:hover {
       transform: scale(1.2);
     }
-
-    .emoji-text {
-      font-size: 0.9rem;
-      margin-top: 0.5rem;
-      font-family: 'IBM Plex Sans', sans-serif;
-    }
-
     h1 {
       font-size: 1.4rem;
-      margin-bottom: 0.5rem;
       font-weight: 600;
+      margin-bottom: 0.5rem;
     }
-
     .arabic {
       font-family: 'IBM Plex Sans Arabic', sans-serif;
     }
-
     form {
       display: none;
       margin-top: 2rem;
     }
-
     .input-wrapper {
       position: relative;
     }
-
-    input, textarea {
+    input, textarea, button {
       width: 100%;
-      padding: 12px 36px 12px 12px;
+      font-family: 'IBM Plex Sans', sans-serif;
+      padding: 14px 20px;
       border: 1px solid #ccc;
-      border-radius: 25px;
+      border-radius: 40px;
       margin-bottom: 1rem;
       font-size: 1rem;
       box-sizing: border-box;
+      direction: ltr;
+    }
+    input::placeholder,
+    textarea::placeholder {
+      text-align: left;
       font-family: 'IBM Plex Sans', sans-serif;
     }
-
     .checkmark {
       position: absolute;
       right: 10px;
@@ -103,28 +89,25 @@
       color: green;
       display: none;
     }
-
     .show-check {
       display: inline;
     }
-
     button {
-      width: 100%;
-      padding: 12px;
-      font-size: 1rem;
-      border: none;
-      border-radius: 25px;
       background-color: #6d9ba5;
       color: white;
+      border: none;
       cursor: pointer;
-      font-family: 'IBM Plex Sans', sans-serif;
     }
-
     button:disabled {
       background-color: #b0c5ca;
       cursor: not-allowed;
     }
-
+    #thankyou {
+      display: none;
+      font-size: 1.4rem;
+      font-weight: 600;
+      margin-top: 2rem;
+    }
     .loader {
       border: 3px solid #f3f3f3;
       border-radius: 50%;
@@ -135,17 +118,9 @@
       margin: 10px auto;
       display: none;
     }
-
     @keyframes spin {
       0% { transform: rotate(0deg); }
       100% { transform: rotate(360deg); }
-    }
-
-    #thankyou {
-      display: none;
-      font-size: 1.4rem;
-      font-weight: 600;
-      margin-top: 2rem;
     }
   </style>
 </head>
@@ -155,38 +130,36 @@
     <div id="main-question">
       <h1>How was your experience today?<br><span class="arabic">كيف كانت تجربتك اليوم؟</span></h1>
       <div class="emoji-box" id="emojis">
-      <div class="emoji" onclick="selectEmoji('😡')">😡<div class="emoji-text">Bad</div></div>
-      <div class="emoji" onclick="selectEmoji('😞')">😞<div class="emoji-text">Poor</div></div>
-      <div class="emoji" onclick="selectEmoji('😐')">😐<div class="emoji-text">Okay</div></div>
-      <div class="emoji" onclick="selectEmoji('😄')">😄<div class="emoji-text">Good</div></div>
-      <div class="emoji" onclick="selectEmoji('🥰')">🥰<div class="emoji-text">Excellent</div></div>
-</div>
-
+        <div class="emoji-option" onclick="selectEmoji('🤬')">🤬<span>Bad</span></div>
+        <div class="emoji-option" onclick="selectEmoji('😞')">😞<span>Poor</span></div>
+        <div class="emoji-option" onclick="selectEmoji('😐')">😐<span>Okay</span></div>
+        <div class="emoji-option" onclick="selectEmoji('😄')">😄<span>Good</span></div>
+        <div class="emoji-option" onclick="selectEmoji('🥰')">🥰<span>Excellent</span></div>
+      </div>
     </div>
     <div id="subquestion" style="display:none">
       <h1>Please fill in your details<br><span class="arabic">يرجى تعبئة التفاصيل</span></h1>
     </div>
     <form id="detailsForm" onsubmit="submitForm(event)">
       <div class="input-wrapper">
-        <input type="text" id="name" placeholder="Your Name / اسمك">
+        <input type="text" id="name" placeholder="اسمك / Your Name" oninput="detectLang(this)">
         <span class="checkmark" id="check-name">✔️</span>
       </div>
       <div class="input-wrapper">
-        <input type="text" id="contact" placeholder="Contact Number / رقم التواصل">
+        <input type="text" id="contact" placeholder="رقم التواصل / Contact Number" oninput="detectLang(this)">
         <span class="checkmark" id="check-contact">✔️</span>
       </div>
       <div class="input-wrapper">
-        <textarea rows="3" id="comments" placeholder="Additional Comments / ملاحظات إضافية"></textarea>
+        <textarea rows="3" id="comments" placeholder="ملاحظات إضافية / Additional Comments" oninput="detectLang(this)"></textarea>
         <span class="checkmark" id="check-comments">✔️</span>
       </div>
       <div class="loader" id="loader"></div>
       <button type="submit" id="submitBtn">Submit</button>
     </form>
     <div id="thankyou">
-      <p>Thank you for your feedback!<br><span class="arabic">شكراً لملاحظاتك!</span></p>
+      <p>Thank you for your feedback!<br><span class="arabic">شكراً لملاحظاتك</span></p>
     </div>
   </div>
-
   <script>
     let selectedEmoji = '';
 
@@ -196,6 +169,11 @@
       document.getElementById('emojis').style.display = 'none';
       document.getElementById('detailsForm').style.display = 'block';
       document.getElementById('subquestion').style.display = 'block';
+    }
+
+    function detectLang(input) {
+      const isArabic = /[؀-ۿ]/.test(input.value);
+      input.style.direction = isArabic ? 'rtl' : 'ltr';
     }
 
     function submitForm(e) {
