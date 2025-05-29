@@ -43,14 +43,16 @@
     .emoji:hover {
       transform: scale(1.3);
     }
-    h1 {
-      font-family: 'IBM Plex Sans', sans-serif;
+    h1, #subquestion {
       font-size: 1.4rem;
       margin-bottom: 0.5rem;
       font-weight: 600;
     }
     .arabic {
       font-family: 'IBM Plex Sans Arabic', sans-serif;
+    }
+    #main-question {
+      display: block;
     }
     form {
       display: none;
@@ -78,31 +80,54 @@
     button:hover {
       background-color: #5d8d96;
     }
+    #thankyou {
+      display: none;
+      font-size: 1.4rem;
+      font-weight: 600;
+      margin-top: 2rem;
+    }
   </style>
 </head>
 <body>
   <div class="card">
     <img src="logo long no background (1).png" alt="Dorchester Logo" class="logo">
-    <h1>How was your experience today?<br><span class="arabic">كيف كانت تجربتك اليوم؟</span></h1>
-    <div class="emoji-box" id="emojis">
-      <span class="emoji" onclick="selectEmoji()">😠</span>
-      <span class="emoji" onclick="selectEmoji()">😞</span>
-      <span class="emoji" onclick="selectEmoji()">😐</span>
-      <span class="emoji" onclick="selectEmoji()">🙂</span>
-      <span class="emoji" onclick="selectEmoji()">😄</span>
+    <div id="main-question">
+      <h1>How was your experience today?<br><span class="arabic">كيف كانت تجربتك اليوم؟</span></h1>
+      <div class="emoji-box" id="emojis">
+        <span class="emoji" onclick="selectEmoji()">😠</span>
+        <span class="emoji" onclick="selectEmoji()">😞</span>
+        <span class="emoji" onclick="selectEmoji()">😐</span>
+        <span class="emoji" onclick="selectEmoji()">🙂</span>
+        <span class="emoji" onclick="selectEmoji()">😄</span>
+      </div>
     </div>
-    <form id="detailsForm">
+    <div id="subquestion" style="display:none">
+      <h1>Please fill in your details<br><span class="arabic">يرجى تعبئة التفاصيل</span></h1>
+    </div>
+    <form id="detailsForm" onsubmit="submitForm(event)">
       <input type="text" placeholder="Your Name / اسمك">
       <input type="text" placeholder="Contact Number / رقم التواصل">
       <textarea rows="3" placeholder="Additional Comments / ملاحظات إضافية"></textarea>
-      <button type="submit">Book Now</button>
+      <button type="submit">Submit</button>
     </form>
+    <div id="thankyou">
+      <p>Thank you for your feedback!<br><span class="arabic">شكراً لملاحظاتك!</span></p>
+    </div>
   </div>
 
   <script>
     function selectEmoji() {
+      document.getElementById('main-question').style.display = 'none';
       document.getElementById('emojis').style.display = 'none';
       document.getElementById('detailsForm').style.display = 'block';
+      document.getElementById('subquestion').style.display = 'block';
+    }
+
+    function submitForm(e) {
+      e.preventDefault();
+      document.getElementById('detailsForm').style.display = 'none';
+      document.getElementById('subquestion').style.display = 'none';
+      document.getElementById('thankyou').style.display = 'block';
     }
   </script>
 </body>
