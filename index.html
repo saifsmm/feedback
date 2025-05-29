@@ -19,17 +19,7 @@
       display: flex;
       justify-content: center;
       align-items: center;
-    }
-
-    .back-button {
-      position: absolute;
-      top: 20px;
-      left: 20px;
-      font-size: 1.5rem;
-      background: none;
-      border: none;
-      cursor: pointer;
-      font-family: 'IBM Plex Sans', sans-serif;
+      overflow: hidden;
     }
 
     .card {
@@ -38,6 +28,18 @@
       padding: 2rem;
       text-align: center;
       box-sizing: border-box;
+      position: relative;
+    }
+
+    #back-arrow {
+      position: absolute;
+      top: 16px;
+      left: 16px;
+      font-size: 1.5rem;
+      color: #000;
+      cursor: pointer;
+      text-decoration: none;
+      z-index: 999;
     }
 
     .logo {
@@ -104,20 +106,21 @@
       font-family: 'IBM Plex Sans', sans-serif;
     }
 
-    input::placeholder,
-    textarea::placeholder {
-      text-align: left;
-      font-family: 'IBM Plex Sans', sans-serif;
-    }
-
-    .checkmark {
+    .checkmark, .xmark {
       position: absolute;
       right: 10px;
       top: 50%;
       transform: translateY(-50%);
       font-size: 1.2rem;
-      color: green;
       display: none;
+    }
+
+    .checkmark {
+      color: green;
+    }
+
+    .xmark {
+      color: red;
     }
 
     .show-check {
@@ -166,8 +169,8 @@
   </style>
 </head>
 <body>
-  <button class="back-button" onclick="goBack()">←</button>
   <div class="card">
+    <a id="back-arrow" onclick="goBack()">←</a>
     <img src="longlogo-dorchester.png" alt="Dorchester Logo" class="logo">
     <div id="main-question">
       <h1>How was your experience today?<br><span class="arabic">كيف كانت تجربتك اليوم؟</span></h1>
@@ -179,25 +182,30 @@
         <div class="emoji" onclick="selectEmoji('🥰')">🥰<div class="emoji-text">Excellent</div></div>
       </div>
     </div>
+
     <div id="subquestion" style="display:none">
       <h1>Please fill in your details<br><span class="arabic">يرجى تعبئة التفاصيل</span></h1>
     </div>
+
     <form id="detailsForm" onsubmit="submitForm(event)">
       <div class="input-wrapper">
-        <input type="text" id="name" placeholder="Your Name / اسمك" oninput="detectDir(this)">
+        <input type="text" id="name" placeholder="Your Name / اسمك">
         <span class="checkmark" id="check-name">✔️</span>
+        <span class="xmark" id="x-name">❌</span>
       </div>
       <div class="input-wrapper">
-        <input type="text" id="contact" placeholder="Contact Number / رقم التواصل" oninput="detectDir(this)">
+        <input type="text" id="contact" placeholder="Contact Number / رقم التواصل">
         <span class="checkmark" id="check-contact">✔️</span>
+        <span class="xmark" id="x-contact">❌</span>
       </div>
       <div class="input-wrapper">
-        <textarea rows="3" id="comments" placeholder="Additional Comments / ملاحظات إضافية" oninput="detectDir(this)"></textarea>
+        <textarea rows="3" id="comments" placeholder="Additional Comments / ملاحظات إضافية"></textarea>
         <span class="checkmark" id="check-comments">✔️</span>
       </div>
       <div class="loader" id="loader"></div>
       <button type="submit" id="submitBtn">Submit</button>
     </form>
+
     <div id="thankyou">
       <p>Thank you for your feedback!<br><span class="arabic">شكراً لملاحظاتك!</span></p>
     </div>
@@ -221,29 +229,47 @@
       document.getElementById('subquestion').style.display = 'none';
     }
 
-    function detectDir(input) {
-      const val = input.value;
-      input.dir = /[؀-ۿ]/.test(val) ? 'rtl' : 'ltr';
-    }
-
     function submitForm(e) {
       e.preventDefault();
+      const name = document.getElementById('name');
+      const contact = document.getElementById('contact');
+      const comments = document.getElementById('comments');
       const btn = document.getElementById('submitBtn');
       const loader = document.getElementById('loader');
+
+      let valid = true;
+
+      if (!name.value.trim()) {
+        document.getElementById('check-name').style.display = 'none';
+        document.getElementById('x-name').style.display = 'inline';
+        valid = false;
+      } else {
+        document.getElementById('check-name').style.display = 'inline';
+        document.getElementById('x-name').style.display = 'none';
+      }
+
+      if (!contact.value.trim()) {
+        document.getElementById('check-contact').style.display = 'none';
+        document.getElementById('x-contact').style.display = 'inline';
+        valid = false;
+      } else {
+        document.getElementById('check-contact').style.display = 'inline';
+        document.getElementById('x-contact').style.display = 'none';
+      }
+
+      if (!valid) return;
+
       btn.disabled = true;
       loader.style.display = 'block';
 
-      const name = document.getElementById('name').value;
-      const contact = document.getElementById('contact').value;
-      const comments = document.getElementById('comments').value;
       const office = new URLSearchParams(window.location.search).get('office') || 'unknown';
 
       const data = {
         data: {
           Emoji: selectedEmoji,
-          Name: name,
-          Contact: contact,
-          Comments: comments,
+          Name: name.value,
+          Contact: contact.value,
+          Comments: comments.value,
           Office: office
         }
       };
@@ -258,9 +284,6 @@
         return response.json();
       })
       .then(() => {
-        document.getElementById('check-name').classList.add('show-check');
-        document.getElementById('check-contact').classList.add('show-check');
-        document.getElementById('check-comments').classList.add('show-check');
         setTimeout(() => {
           document.getElementById('detailsForm').reset();
           document.getElementById('detailsForm').style.display = 'none';
@@ -268,9 +291,11 @@
           document.getElementById('thankyou').style.display = 'block';
           btn.disabled = false;
           loader.style.display = 'none';
-          document.getElementById('check-name').classList.remove('show-check');
-          document.getElementById('check-contact').classList.remove('show-check');
-          document.getElementById('check-comments').classList.remove('show-check');
+          document.getElementById('check-name').style.display = 'none';
+          document.getElementById('check-contact').style.display = 'none';
+          document.getElementById('check-comments').style.display = 'none';
+          document.getElementById('x-name').style.display = 'none';
+          document.getElementById('x-contact').style.display = 'none';
           setTimeout(() => location.reload(), 3000);
         }, 1500);
       })
