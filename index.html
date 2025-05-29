@@ -134,6 +134,11 @@
     function submitForm(e) {
       e.preventDefault();
 
+      if (!selectedEmoji) {
+        alert('Please select an emoji first.');
+        return;
+      }
+
       const name = document.getElementById('name').value;
       const contact = document.getElementById('contact').value;
       const comment = document.getElementById('comment').value;
@@ -153,10 +158,15 @@
         }
       })
       .then(response => response.text())
-      .then(() => {
+      .then(responseText => {
+        console.log('Response from server:', responseText);
         document.getElementById('detailsForm').style.display = 'none';
         document.getElementById('subquestion').style.display = 'none';
         document.getElementById('thankyou').style.display = 'block';
+      })
+      .catch(error => {
+        console.error('Error submitting form:', error);
+        alert('Something went wrong. Please try again.');
       });
     }
   </script>
