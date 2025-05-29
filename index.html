@@ -13,20 +13,18 @@
       height: 100%;
       font-family: 'IBM Plex Sans', sans-serif;
       background-color: #fff;
-      font-size: 1.6rem;
-      overflow: auto;
     }
 
     body {
       display: flex;
       justify-content: center;
-      align-items: flex-start;
+      align-items: center;
     }
 
     .card {
       width: 100%;
-      max-width: 900px;
-      padding: 2rem;
+      max-width: 600px;
+      padding: 1rem;
       text-align: center;
       box-sizing: border-box;
       position: relative;
@@ -34,37 +32,38 @@
 
     .logo {
       width: 100%;
-      max-width: 400px;
+      max-width: 420px;
       height: auto;
-      margin: 0 auto 1.5rem auto;
+      margin: 0 auto 2rem auto;
       display: block;
     }
 
     h1 {
-      font-size: 2.8rem;
-      margin-bottom: 1rem;
+      font-size: 2.2rem;
       font-weight: 600;
+      margin: 0 0 1rem 0;
     }
 
     .arabic {
       font-family: 'IBM Plex Sans Arabic', sans-serif;
-      font-size: 2.4rem;
     }
 
     .emoji-box {
       display: flex;
       justify-content: space-between;
-      margin: 2rem 0;
-      font-size: 4rem;
+      margin-top: 2rem;
+      font-size: 3rem;
+      flex-wrap: wrap;
     }
 
     .emoji {
+      flex: 1;
       display: flex;
       flex-direction: column;
       align-items: center;
-      flex: 1;
-      cursor: pointer;
       transition: transform 0.2s;
+      cursor: pointer;
+      min-width: 60px;
     }
 
     .emoji:hover {
@@ -72,8 +71,8 @@
     }
 
     .emoji-text {
-      font-size: 1.4rem;
-      margin-top: 0.5rem;
+      font-size: 1rem;
+      margin-top: 0.4rem;
     }
 
     #subquestion {
@@ -83,44 +82,43 @@
     form {
       display: none;
       margin-top: 2rem;
+      overflow-y: auto;
+      max-height: 65vh;
     }
 
     .input-wrapper {
       position: relative;
+      margin-bottom: 1.2rem;
     }
 
     input, textarea {
       width: 100%;
-      padding: 16px 40px 16px 16px;
-      font-size: 1.4rem;
-      border-radius: 25px;
+      padding: 14px 42px 14px 14px;
       border: 1px solid #ccc;
-      margin-bottom: 1rem;
-      direction: auto;
+      border-radius: 25px;
+      font-size: 1.1rem;
       font-family: 'IBM Plex Sans', sans-serif;
+      box-sizing: border-box;
+      direction: auto;
     }
 
-    input::placeholder, textarea::placeholder {
+    input::placeholder,
+    textarea::placeholder {
       text-align: left;
       font-family: 'IBM Plex Sans Arabic', sans-serif;
     }
 
     .checkmark, .xmark {
       position: absolute;
-      right: 14px;
+      right: 12px;
       top: 50%;
       transform: translateY(-50%);
-      font-size: 1.4rem;
+      font-size: 1.3rem;
       display: none;
     }
 
-    .checkmark {
-      color: green;
-    }
-
-    .xmark {
-      color: red;
-    }
+    .checkmark { color: green; }
+    .xmark { color: red; }
 
     .show-check {
       display: inline;
@@ -129,7 +127,7 @@
     button {
       width: 100%;
       padding: 14px;
-      font-size: 1.4rem;
+      font-size: 1rem;
       border: none;
       border-radius: 25px;
       background-color: #6d9ba5;
@@ -137,20 +135,15 @@
       cursor: pointer;
     }
 
-    button:disabled {
-      background-color: #b0c5ca;
-      cursor: not-allowed;
-    }
-
     .loader {
-      border: 4px solid #f3f3f3;
-      border-top: 4px solid #6d9ba5;
-      border-radius: 50%;
-      width: 32px;
-      height: 32px;
-      animation: spin 1s linear infinite;
-      margin: 12px auto;
       display: none;
+      margin: 12px auto;
+      width: 30px;
+      height: 30px;
+      border: 3px solid #f3f3f3;
+      border-top: 3px solid #6d9ba5;
+      border-radius: 50%;
+      animation: spin 1s linear infinite;
     }
 
     @keyframes spin {
@@ -160,26 +153,41 @@
 
     #thankyou {
       display: none;
-      font-size: 2rem;
+      font-size: 1.5rem;
       font-weight: 600;
       margin-top: 2rem;
     }
 
     #backArrow {
       position: absolute;
-      top: 15px;
+      top: 10px;
       left: 15px;
-      font-size: 2rem;
+      font-size: 1.8rem;
       cursor: pointer;
       color: black;
       display: none;
+    }
+
+    @media screen and (max-width: 480px) {
+      h1 {
+        font-size: 1.6rem;
+      }
+      .emoji-box {
+        font-size: 2.3rem;
+      }
+      .emoji-text {
+        font-size: 0.8rem;
+      }
+      input, textarea {
+        font-size: 1rem;
+      }
     }
   </style>
 </head>
 <body>
   <div class="card">
     <div id="backArrow" onclick="goBack()">←</div>
-    <img src="longlogo-dorchester.png" alt="Dorchester Logo" class="logo">
+    <img src="longlogo-dorchester.png" alt="Dorchester Logo" class="logo" />
     <div id="main-question">
       <h1>How was your experience today?<br><span class="arabic">كيف كانت تجربتك اليوم؟</span></h1>
       <div class="emoji-box" id="emojis">
@@ -207,7 +215,7 @@
         <span class="xmark" id="x-contact">❌</span>
       </div>
       <div class="input-wrapper">
-        <textarea id="comments" rows="3" placeholder="Additional Comments / ملاحظات إضافية"></textarea>
+        <textarea rows="3" id="comments" placeholder="Additional Comments / ملاحظات إضافية"></textarea>
         <span class="checkmark" id="check-comments">✔️</span>
       </div>
       <div class="loader" id="loader"></div>
@@ -286,16 +294,30 @@
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(data)
       })
-      .then(response => response.json())
+      .then(response => {
+        if (!response.ok) throw new Error('Network error');
+        return response.json();
+      })
       .then(() => {
-        document.getElementById('thankyou').style.display = 'block';
-        document.getElementById('detailsForm').style.display = 'none';
-        document.getElementById('subquestion').style.display = 'none';
-        loader.style.display = 'none';
-        setTimeout(() => location.reload(), 3000);
+        document.getElementById('check-name').classList.add('show-check');
+        document.getElementById('check-contact').classList.add('show-check');
+        document.getElementById('check-comments').classList.add('show-check');
+        setTimeout(() => {
+          document.getElementById('detailsForm').reset();
+          document.getElementById('detailsForm').style.display = 'none';
+          document.getElementById('subquestion').style.display = 'none';
+          document.getElementById('thankyou').style.display = 'block';
+          btn.disabled = false;
+          loader.style.display = 'none';
+          document.getElementById('check-name').classList.remove('show-check');
+          document.getElementById('check-contact').classList.remove('show-check');
+          document.getElementById('check-comments').classList.remove('show-check');
+          document.getElementById('backArrow').style.display = 'none';
+          setTimeout(() => location.reload(), 3000);
+        }, 1500);
       })
       .catch(() => {
-        alert("Submission failed. Please try again.");
+        alert("Something went wrong. Please try again.");
         btn.disabled = false;
         loader.style.display = 'none';
       });
