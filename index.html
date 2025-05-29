@@ -2,7 +2,7 @@
 <html lang="en" dir="ltr">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" />
   <title>Customer Happiness</title>
   <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;600&display=swap" rel="stylesheet" />
   <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Arabic:wght@400;600&display=swap" rel="stylesheet" />
@@ -10,24 +10,26 @@
     html, body {
       margin: 0;
       padding: 0;
-      height: 100vh;
+      height: 100%;
       font-family: 'IBM Plex Sans', sans-serif;
       background-color: #ffffff;
-      overflow: hidden;
     }
+
     body {
       display: flex;
       justify-content: center;
       align-items: center;
+      overflow: hidden;
     }
+
     .card {
       width: 100%;
-      max-width: 480px;
-      padding: 2rem;
+      padding: 2rem 1rem;
       text-align: center;
       box-sizing: border-box;
       position: relative;
     }
+
     .logo {
       width: 100%;
       max-width: 380px;
@@ -35,13 +37,14 @@
       margin: 0 auto 1.5rem auto;
       display: block;
     }
+
     .emoji-box {
       display: flex;
-      justify-content: space-between;
-      margin: 1.5rem auto;
+      justify-content: space-evenly;
+      margin: 1.5rem 0;
       font-size: 2.5rem;
-      max-width: 420px;
     }
+
     .emoji {
       display: flex;
       flex-direction: column;
@@ -50,110 +53,40 @@
       transition: transform 0.2s;
       flex: 1;
     }
+
     .emoji:hover {
       transform: scale(1.2);
     }
+
     .emoji-text {
       font-size: 0.9rem;
       margin-top: 0.5rem;
       font-family: 'IBM Plex Sans', sans-serif;
     }
+
     h1 {
       font-size: 1.4rem;
       margin-bottom: 0.5rem;
       font-weight: 600;
     }
+
     .arabic {
       font-family: 'IBM Plex Sans Arabic', sans-serif;
     }
-    form {
-      display: none;
-      margin-top: 2rem;
-    }
-    .input-wrapper {
-      position: relative;
-    }
-    input, textarea {
-      width: 100%;
-      padding: 12px 36px 12px 12px;
-      border: 1px solid #ccc;
-      border-radius: 25px;
+
+    #main-question, #thankyou {
       margin-bottom: 1rem;
-      font-size: 16px;
-      box-sizing: border-box;
-      font-family: 'IBM Plex Sans', sans-serif;
-      direction: auto;
     }
-    input::placeholder, textarea::placeholder {
-      text-align: left;
-      font-family: 'IBM Plex Sans Arabic', sans-serif;
-    }
-    .checkmark, .xmark {
-      position: absolute;
-      right: 10px;
-      top: 50%;
-      transform: translateY(-50%);
-      font-size: 1.2rem;
-      display: none;
-    }
-    .checkmark {
-      color: green;
-    }
-    .xmark {
-      color: red;
-    }
-    .show-check {
-      display: inline;
-    }
-    button {
-      width: 100%;
-      padding: 12px;
-      font-size: 1rem;
-      border: none;
-      border-radius: 25px;
-      background-color: #6d9ba5;
-      color: white;
-      cursor: pointer;
-      font-family: 'IBM Plex Sans', sans-serif;
-    }
-    button:disabled {
-      background-color: #b0c5ca;
-      cursor: not-allowed;
-    }
-    .loader {
-      border: 3px solid #f3f3f3;
-      border-radius: 50%;
-      border-top: 3px solid #6d9ba5;
-      width: 30px;
-      height: 30px;
-      animation: spin 1s linear infinite;
-      margin: 10px auto;
-      display: none;
-    }
-    @keyframes spin {
-      0% { transform: rotate(0deg); }
-      100% { transform: rotate(360deg); }
-    }
+
     #thankyou {
       display: none;
       font-size: 1.4rem;
       font-weight: 600;
-      margin-top: 2rem;
-    }
-    #backArrow {
-      position: absolute;
-      top: 10px;
-      left: 15px;
-      font-size: 1.5rem;
-      cursor: pointer;
-      color: black;
-      display: none;
     }
   </style>
 </head>
 <body>
   <div class="card">
-    <div id="backArrow" onclick="goBack()">←</div>
     <img src="longlogo-dorchester.png" alt="Dorchester Logo" class="logo" />
     <div id="main-question">
       <h1>How was your experience today?<br><span class="arabic">كيف كانت تجربتك اليوم؟</span></h1>
@@ -165,126 +98,18 @@
         <div class="emoji" onclick="selectEmoji('🥰')">🥰<div class="emoji-text">Excellent</div></div>
       </div>
     </div>
-    <div id="subquestion" style="display:none">
-      <h1>Please fill in your details<br><span class="arabic">يرجى تعبئة التفاصيل</span></h1>
-    </div>
-    <form id="detailsForm" onsubmit="submitForm(event)">
-      <div class="input-wrapper">
-        <input type="text" id="name" placeholder="Your Name / اسمك" oninput="validateField(this, 'check-name', 'x-name')">
-        <span class="checkmark" id="check-name">✔️</span>
-        <span class="xmark" id="x-name">❌</span>
-      </div>
-      <div class="input-wrapper">
-        <input type="text" id="contact" placeholder="Contact Number / رقم التواصل" oninput="validateField(this, 'check-contact', 'x-contact')">
-        <span class="checkmark" id="check-contact">✔️</span>
-        <span class="xmark" id="x-contact">❌</span>
-      </div>
-      <div class="input-wrapper">
-        <textarea rows="3" id="comments" placeholder="Additional Comments / ملاحظات إضافية"></textarea>
-        <span class="checkmark" id="check-comments">✔️</span>
-      </div>
-      <div class="loader" id="loader"></div>
-      <button type="submit" id="submitBtn">Submit</button>
-    </form>
+
     <div id="thankyou">
       <p>Thank you for your feedback!<br><span class="arabic">شكراً لملاحظاتك!</span></p>
     </div>
   </div>
 
   <script>
-    let selectedEmoji = '';
-
     function selectEmoji(emoji) {
-      selectedEmoji = emoji;
       document.getElementById('main-question').style.display = 'none';
       document.getElementById('emojis').style.display = 'none';
-      document.getElementById('detailsForm').style.display = 'block';
-      document.getElementById('subquestion').style.display = 'block';
-      document.getElementById('backArrow').style.display = 'block';
-    }
-
-    function goBack() {
-      document.getElementById('main-question').style.display = 'block';
-      document.getElementById('emojis').style.display = 'flex';
-      document.getElementById('detailsForm').style.display = 'none';
-      document.getElementById('subquestion').style.display = 'none';
-      document.getElementById('backArrow').style.display = 'none';
-    }
-
-    function validateField(input, checkId, xId) {
-      if (input.value.trim() === "") {
-        document.getElementById(checkId).style.display = "none";
-        document.getElementById(xId).style.display = "inline";
-      } else {
-        document.getElementById(checkId).style.display = "inline";
-        document.getElementById(xId).style.display = "none";
-      }
-    }
-
-    function submitForm(e) {
-      e.preventDefault();
-      const btn = document.getElementById('submitBtn');
-      const loader = document.getElementById('loader');
-      const name = document.getElementById('name');
-      const contact = document.getElementById('contact');
-
-      if (name.value.trim() === "") {
-        validateField(name, 'check-name', 'x-name');
-        return;
-      }
-      if (contact.value.trim() === "") {
-        validateField(contact, 'check-contact', 'x-contact');
-        return;
-      }
-
-      btn.disabled = true;
-      loader.style.display = 'block';
-
-      const comments = document.getElementById('comments').value;
-      const office = new URLSearchParams(window.location.search).get('office') || 'unknown';
-
-      const data = {
-        data: {
-          Emoji: selectedEmoji,
-          Name: name.value,
-          Contact: contact.value,
-          Comments: comments,
-          Office: office
-        }
-      };
-
-      fetch('https://sheetdb.io/api/v1/tycgcxuuprkv7', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(data)
-      })
-      .then(response => {
-        if (!response.ok) throw new Error('Network error');
-        return response.json();
-      })
-      .then(() => {
-        document.getElementById('check-name').classList.add('show-check');
-        document.getElementById('check-contact').classList.add('show-check');
-        document.getElementById('check-comments').classList.add('show-check');
-        setTimeout(() => {
-          document.getElementById('detailsForm').reset();
-          document.getElementById('detailsForm').style.display = 'none';
-          document.getElementById('subquestion').style.display = 'none';
-          document.getElementById('thankyou').style.display = 'block';
-          btn.disabled = false;
-          loader.style.display = 'none';
-          document.getElementById('check-name').classList.remove('show-check');
-          document.getElementById('check-contact').classList.remove('show-check');
-          document.getElementById('check-comments').classList.remove('show-check');
-          document.getElementById('backArrow').style.display = 'none';
-          setTimeout(() => location.reload(), 3000);
-        }, 1500);
-      })
-      .catch(() => {
-        alert("Something went wrong. Please try again.");
-        btn.disabled = false;
-        loader.style.display = 'none';
-      });
+      document.getElementById('thankyou').style.display = 'block';
+      setTimeout(() => location.reload(), 3000);
     }
   </script>
 </body>
