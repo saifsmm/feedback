@@ -94,20 +94,20 @@
     <div id="main-question">
       <h1>How was your experience today?<br><span class="arabic">كيف كانت تجربتك اليوم؟</span></h1>
       <div class="emoji-box" id="emojis">
-        <span class="emoji" onclick="selectEmoji()">😠</span>
-        <span class="emoji" onclick="selectEmoji()">😞</span>
-        <span class="emoji" onclick="selectEmoji()">😐</span>
-        <span class="emoji" onclick="selectEmoji()">🙂</span>
-        <span class="emoji" onclick="selectEmoji()">😄</span>
+        <span class="emoji" onclick="selectEmoji('😠')">😠</span>
+        <span class="emoji" onclick="selectEmoji('😞')">😞</span>
+        <span class="emoji" onclick="selectEmoji('😐')">😐</span>
+        <span class="emoji" onclick="selectEmoji('🙂')">🙂</span>
+        <span class="emoji" onclick="selectEmoji('😄')">😄</span>
       </div>
     </div>
     <div id="subquestion" style="display:none">
       <h1>Please fill in your details<br><span class="arabic">يرجى تعبئة التفاصيل</span></h1>
     </div>
     <form id="detailsForm" onsubmit="submitForm(event)">
-      <input type="text" placeholder="Your Name / اسمك">
-      <input type="text" placeholder="Contact Number / رقم التواصل">
-      <textarea rows="3" placeholder="Additional Comments / ملاحظات إضافية"></textarea>
+      <input type="text" id="name" placeholder="Your Name / اسمك">
+      <input type="text" id="contact" placeholder="Contact Number / رقم التواصل">
+      <textarea rows="3" id="comment" placeholder="Additional Comments / ملاحظات إضافية"></textarea>
       <button type="submit">Submit</button>
     </form>
     <div id="thankyou">
@@ -116,18 +116,48 @@
   </div>
 
   <script>
-    function selectEmoji() {
+    let selectedEmoji = '';
+
+    function selectEmoji(emoji) {
+      selectedEmoji = emoji;
       document.getElementById('main-question').style.display = 'none';
       document.getElementById('emojis').style.display = 'none';
       document.getElementById('detailsForm').style.display = 'block';
       document.getElementById('subquestion').style.display = 'block';
     }
 
+    function getOfficeFromURL() {
+      const urlParams = new URLSearchParams(window.location.search);
+      return urlParams.get('office') || 'unknown';
+    }
+
     function submitForm(e) {
       e.preventDefault();
-      document.getElementById('detailsForm').style.display = 'none';
-      document.getElementById('subquestion').style.display = 'none';
-      document.getElementById('thankyou').style.display = 'block';
+
+      const name = document.getElementById('name').value;
+      const contact = document.getElementById('contact').value;
+      const comment = document.getElementById('comment').value;
+      const office = getOfficeFromURL();
+
+      fetch('https://script.google.com/macros/s/AKfycbxvSiHNdvJS-7wcUrKwtyyWMUsMHefp6s02jUdJXRiib432wOrvpytxVpZZ1xceQeqH0Q/exec', {
+        method: 'POST',
+        body: JSON.stringify({
+          emoji: selectedEmoji,
+          name: name,
+          contact: contact,
+          comment: comment,
+          office: office
+        }),
+        headers: {
+          'Content-Type': 'application/json'
+        }
+      })
+      .then(response => response.text())
+      .then(() => {
+        document.getElementById('detailsForm').style.display = 'none';
+        document.getElementById('subquestion').style.display = 'none';
+        document.getElementById('thankyou').style.display = 'block';
+      });
     }
   </script>
 </body>
