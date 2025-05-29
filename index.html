@@ -26,7 +26,7 @@
     }
     .logo {
       width: 100%;
-      max-width: 380px;
+      max-width: 360px;
       height: auto;
       margin: 0 auto 1.5rem auto;
       display: block;
@@ -90,7 +90,8 @@
 </head>
 <body>
   <div class="card">
-    <img src="logo long no background (1).png" alt="Dorchester Logo" class="logo">
+    <img src="logo%20long%20no%20background%20(1).png" alt="Dorchester Logo" class="logo">
+    
     <div id="main-question">
       <h1>How was your experience today?<br><span class="arabic">كيف كانت تجربتك اليوم؟</span></h1>
       <div class="emoji-box" id="emojis">
@@ -101,22 +102,26 @@
         <span class="emoji" onclick="selectEmoji('😄')">😄</span>
       </div>
     </div>
+
     <div id="subquestion" style="display:none">
       <h1>Please fill in your details<br><span class="arabic">يرجى تعبئة التفاصيل</span></h1>
     </div>
+
     <form id="detailsForm" onsubmit="submitForm(event)">
-      <input type="text" id="name" placeholder="Your Name / اسمك">
-      <input type="text" id="contact" placeholder="Contact Number / رقم التواصل">
-      <textarea rows="3" id="comment" placeholder="Additional Comments / ملاحظات إضافية"></textarea>
+      <input id="name" type="text" placeholder="Your Name / اسمك">
+      <input id="contact" type="text" placeholder="Contact Number / رقم التواصل">
+      <textarea id="comment" rows="3" placeholder="Additional Comments / ملاحظات إضافية"></textarea>
       <button type="submit">Submit</button>
     </form>
+
     <div id="thankyou">
       <p>Thank you for your feedback!<br><span class="arabic">شكراً لملاحظاتك!</span></p>
     </div>
   </div>
 
   <script>
-    let selectedEmoji = '';
+    let selectedEmoji = "";
+    const office = new URLSearchParams(window.location.search).get("office") || "unknown";
 
     function selectEmoji(emoji) {
       selectedEmoji = emoji;
@@ -126,51 +131,42 @@
       document.getElementById('subquestion').style.display = 'block';
     }
 
-    function getOfficeFromURL() {
-      const urlParams = new URLSearchParams(window.location.search);
-      return urlParams.get('office') || 'unknown';
-    }
-
     function submitForm(e) {
       e.preventDefault();
+      const name = document.getElementById("name").value;
+      const contact = document.getElementById("contact").value;
+      const comment = document.getElementById("comment").value;
 
-      if (!selectedEmoji) {
-        alert('Please select an emoji first.');
-        return;
-      }
-
-      const name = document.getElementById('name').value;
-      const contact = document.getElementById('contact').value;
-      const comment = document.getElementById('comment').value;
-      const office = getOfficeFromURL();
-
-      fetch('https://script.google.com/macros/s/AKfycbxvSiHNdvJS-7wcUrKwtyyWMUsMHefp6s02jUdJXRiib432wOrvpytxVpZZ1xceQeqH0Q/exec', {
-        method: 'POST',
-        body: JSON.stringify({
-          emoji: selectedEmoji,
-          name: name,
-          contact: contact,
-          comment: comment,
-          office: office
-        }),
+      fetch("https://sheetdb.io/api/v1/tycgcxuuprkv7", {
+        method: "POST",
         headers: {
-          'Content-Type': 'application/json'
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify({
+          data: {
+            emoji: selectedEmoji,
+            name: name,
+            contact: contact,
+            comment: comment,
+            office: office
+          }
+        })
+      })
+      .then(response => {
+        if (response.ok) {
+          document.getElementById('detailsForm').reset();
+          document.getElementById('detailsForm').style.display = 'none';
+          document.getElementById('subquestion').style.display = 'none';
+          document.getElementById('thankyou').style.display = 'block';
+          setTimeout(() => {
+            window.location.reload();
+          }, 5000);
+        } else {
+          alert("Something went wrong. Please try again.");
         }
       })
-      .then(response => response.text())
-      .then(responseText => {
-        console.log('Response from server:', responseText);
-        document.getElementById('detailsForm').style.display = 'none';
-        document.getElementById('subquestion').style.display = 'none';
-        document.getElementById('thankyou').style.display = 'block';
-
-        setTimeout(() => {
-          window.location.reload();
-        }, 5000);
-      })
       .catch(error => {
-        console.error('Error submitting form:', error);
-        alert('Something went wrong. Please try again.');
+        alert("Something went wrong. Please try again.");
       });
     }
   </script>
