@@ -11,35 +11,41 @@
       margin: 0;
       padding: 0;
       height: 100%;
-      font-size: 1.8rem;
       font-family: 'IBM Plex Sans', sans-serif;
       background-color: #ffffff;
+      font-size: 1.8rem;
     }
+
     body {
       display: flex;
       justify-content: center;
       align-items: center;
+      overflow: hidden;
     }
+
     .card {
-      width: 100%;
-      max-width: 600px;
-      padding: 2rem;
+      width: 90%;
+      padding: 3rem;
       text-align: center;
       box-sizing: border-box;
       position: relative;
     }
+
     .logo {
       width: 100%;
-      max-width: 400px;
+      max-width: 420px;
+      height: auto;
       margin: 0 auto 2rem auto;
       display: block;
     }
+
     .emoji-box {
       display: flex;
-      justify-content: space-between;
+      justify-content: space-around;
       margin: 2rem 0;
       font-size: 4rem;
     }
+
     .emoji {
       display: flex;
       flex-direction: column;
@@ -48,54 +54,74 @@
       transition: transform 0.2s;
       flex: 1;
     }
+
     .emoji:hover {
       transform: scale(1.2);
     }
+
     .emoji-text {
-      font-size: 1.2rem;
+      font-size: 1.1rem;
       margin-top: 0.5rem;
+      font-family: 'IBM Plex Sans', sans-serif;
     }
+
     h1 {
       font-size: 2.2rem;
+      margin-bottom: 0.7rem;
       font-weight: 600;
-      margin-bottom: 1rem;
     }
+
     .arabic {
       font-family: 'IBM Plex Sans Arabic', sans-serif;
     }
+
     form {
       display: none;
-      margin-top: 2rem;
+      margin-top: 3rem;
     }
+
     .input-wrapper {
       position: relative;
     }
+
     input, textarea {
       width: 100%;
-      padding: 16px 48px 16px 16px;
+      padding: 18px 48px 18px 18px;
       border: 1px solid #ccc;
       border-radius: 30px;
-      margin-bottom: 1.2rem;
-      font-size: 1.3rem;
+      margin-bottom: 1.5rem;
+      font-size: 1.4rem;
       box-sizing: border-box;
-      direction: auto;
       font-family: 'IBM Plex Sans', sans-serif;
+      direction: auto;
     }
+
     input::placeholder, textarea::placeholder {
       text-align: left;
       font-family: 'IBM Plex Sans Arabic', sans-serif;
     }
+
     .checkmark, .xmark {
       position: absolute;
-      right: 16px;
+      right: 14px;
       top: 50%;
       transform: translateY(-50%);
-      font-size: 1.4rem;
+      font-size: 1.6rem;
       display: none;
     }
-    .checkmark { color: green; }
-    .xmark { color: red; }
-    .show-check { display: inline; }
+
+    .checkmark {
+      color: green;
+    }
+
+    .xmark {
+      color: red;
+    }
+
+    .show-check {
+      display: inline;
+    }
+
     button {
       width: 100%;
       padding: 16px;
@@ -105,11 +131,14 @@
       background-color: #6d9ba5;
       color: white;
       cursor: pointer;
+      font-family: 'IBM Plex Sans', sans-serif;
     }
+
     button:disabled {
       background-color: #b0c5ca;
       cursor: not-allowed;
     }
+
     .loader {
       border: 4px solid #f3f3f3;
       border-radius: 50%;
@@ -120,16 +149,19 @@
       margin: 12px auto;
       display: none;
     }
+
     @keyframes spin {
       0% { transform: rotate(0deg); }
       100% { transform: rotate(360deg); }
     }
+
     #thankyou {
       display: none;
       font-size: 2rem;
       font-weight: 600;
       margin-top: 3rem;
     }
+
     #backArrow {
       position: absolute;
       top: 10px;
@@ -183,6 +215,7 @@
 
   <script>
     let selectedEmoji = '';
+
     function selectEmoji(emoji) {
       selectedEmoji = emoji;
       document.getElementById('main-question').style.display = 'none';
@@ -191,6 +224,7 @@
       document.getElementById('subquestion').style.display = 'block';
       document.getElementById('backArrow').style.display = 'block';
     }
+
     function goBack() {
       document.getElementById('main-question').style.display = 'block';
       document.getElementById('emojis').style.display = 'flex';
@@ -198,6 +232,7 @@
       document.getElementById('subquestion').style.display = 'none';
       document.getElementById('backArrow').style.display = 'none';
     }
+
     function validateField(input, checkId, xId) {
       if (input.value.trim() === "") {
         document.getElementById(checkId).style.display = "none";
@@ -207,6 +242,7 @@
         document.getElementById(xId).style.display = "none";
       }
     }
+
     function submitForm(e) {
       e.preventDefault();
       const btn = document.getElementById('submitBtn');
