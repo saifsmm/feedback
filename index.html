@@ -163,6 +163,10 @@
         document.getElementById('detailsForm').style.display = 'none';
         document.getElementById('subquestion').style.display = 'none';
         document.getElementById('thankyou').style.display = 'block';
+
+        setTimeout(() => {
+          window.location.reload();
+        }, 5000);
       })
       .catch(error => {
         console.error('Error submitting form:', error);
