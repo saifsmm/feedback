@@ -32,16 +32,25 @@
       display: block;
     }
     .emoji-box {
-      font-size: 3rem;
+      display: flex;
+      justify-content: space-between;
+      font-size: 2.5rem;
       margin: 1.5rem 0;
     }
-    .emoji {
+    .emoji-item {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
       cursor: pointer;
-      margin: 0 0.4rem;
       transition: transform 0.2s;
+      font-size: 2.2rem;
     }
-    .emoji:hover {
-      transform: scale(1.3);
+    .emoji-item span.label {
+      font-size: 0.85rem;
+      margin-top: 0.3rem;
+    }
+    .emoji-item:hover {
+      transform: scale(1.2);
     }
     h1, #subquestion {
       font-size: 1.4rem;
@@ -66,14 +75,10 @@
       font-family: 'IBM Plex Sans', sans-serif;
       padding: 12px 36px 12px 12px;
       border: 1px solid #ccc;
-      border-radius: 23px;
+      border-radius: 40px;
       margin-bottom: 1rem;
       font-size: 1rem;
       box-sizing: border-box;
-    }
-    input::placeholder, textarea::placeholder {
-      font-family: 'IBM Plex Sans Arabic', sans-serif;
-      text-align: left;
     }
     .checkmark {
       position: absolute;
@@ -87,11 +92,14 @@
     .show-check {
       display: inline;
     }
+    input::placeholder, textarea::placeholder {
+      font-family: 'IBM Plex Sans Arabic', sans-serif;
+      text-align: left;
+    }
     button {
       background-color: #6d9ba5;
       color: white;
       cursor: pointer;
-      border-radius: 40px;
     }
     button:disabled {
       background-color: #b0c5ca;
@@ -125,11 +133,11 @@
     <div id="main-question">
       <h1>How was your experience today?<br><span class="arabic">كيف كانت تجربتك اليوم؟</span></h1>
       <div class="emoji-box" id="emojis">
-        <span class="emoji" onclick="selectEmoji('😠')">😠</span>
-        <span class="emoji" onclick="selectEmoji('😞')">😞</span>
-        <span class="emoji" onclick="selectEmoji('😐')">😐</span>
-        <span class="emoji" onclick="selectEmoji('🙂')">🙂</span>
-        <span class="emoji" onclick="selectEmoji('😄')">😄</span>
+        <div class="emoji-item" onclick="selectEmoji('🥰')"><span>🥰</span><span class="label">Excellent</span></div>
+        <div class="emoji-item" onclick="selectEmoji('😄')"><span>😄</span><span class="label">Good</span></div>
+        <div class="emoji-item" onclick="selectEmoji('😐')"><span>😐</span><span class="label">Average</span></div>
+        <div class="emoji-item" onclick="selectEmoji('😞')"><span>😞</span><span class="label">Poor</span></div>
+        <div class="emoji-item" onclick="selectEmoji('😡')"><span>😡</span><span class="label">Bad</span></div>
       </div>
     </div>
     <div id="subquestion" style="display:none">
@@ -137,15 +145,15 @@
     </div>
     <form id="detailsForm" onsubmit="submitForm(event)">
       <div class="input-wrapper">
-        <input type="text" id="name" placeholder="اسمك / Your Name" oninput="detectDirection(this)">
+        <input type="text" id="name" placeholder="اسمك / Your Name" oninput="handleDirection(this)">
         <span class="checkmark" id="check-name">✔️</span>
       </div>
       <div class="input-wrapper">
-        <input type="text" id="contact" placeholder="رقم التواصل / Contact Number" oninput="detectDirection(this)">
+        <input type="text" id="contact" placeholder="رقم التواصل / Contact Number" oninput="handleDirection(this)">
         <span class="checkmark" id="check-contact">✔️</span>
       </div>
       <div class="input-wrapper">
-        <textarea rows="3" id="comments" placeholder="ملاحظات إضافية / Additional Comments" oninput="detectDirection(this)"></textarea>
+        <textarea rows="3" id="comments" placeholder="ملاحظات إضافية / Additional Comments" oninput="handleDirection(this)"></textarea>
         <span class="checkmark" id="check-comments">✔️</span>
       </div>
       <div class="loader" id="loader"></div>
@@ -167,15 +175,10 @@
       document.getElementById('subquestion').style.display = 'block';
     }
 
-    function detectDirection(input) {
-      const val = input.value;
-      if (/^[\u0600-\u06FF]/.test(val)) {
-        input.style.direction = 'rtl';
-        input.style.textAlign = 'right';
-      } else {
-        input.style.direction = 'ltr';
-        input.style.textAlign = 'left';
-      }
+    function handleDirection(el) {
+      const value = el.value;
+      const arabic = /[؀-ۿ]/;
+      el.style.direction = arabic.test(value) ? 'rtl' : 'ltr';
     }
 
     function submitForm(e) {
