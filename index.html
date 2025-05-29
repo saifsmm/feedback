@@ -1,9 +1,9 @@
 <!DOCTYPE html>
 <html lang="en" dir="ltr">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Customer Feedback</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Customer Happiness</title>
   <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;600&display=swap" rel="stylesheet">
   <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Arabic:wght@400;600&display=swap" rel="stylesheet">
   <style>
@@ -51,6 +51,9 @@
     .arabic {
       font-family: 'IBM Plex Sans Arabic', sans-serif;
     }
+    #main-question {
+      display: block;
+    }
     form {
       display: none;
       margin-top: 2rem;
@@ -73,9 +76,28 @@
       background-color: #6d9ba5;
       color: white;
       cursor: pointer;
+      position: relative;
     }
-    button:hover {
-      background-color: #5d8d96;
+    button:disabled {
+      background-color: #a0b6bb;
+      cursor: not-allowed;
+    }
+    .spinner {
+      display: none;
+      border: 3px solid #f3f3f3;
+      border-top: 3px solid white;
+      border-radius: 50%;
+      width: 20px;
+      height: 20px;
+      animation: spin 0.8s linear infinite;
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+    }
+    @keyframes spin {
+      0% { transform: translate(-50%, -50%) rotate(0deg); }
+      100% { transform: translate(-50%, -50%) rotate(360deg); }
     }
     #thankyou {
       display: none;
@@ -87,7 +109,7 @@
 </head>
 <body>
   <div class="card">
-    <img src="logo long no background (1).png" alt="Dorchester Logo" class="logo" />
+    <img src="logo long no background (1).png" alt="Dorchester Logo" class="logo">
     <div id="main-question">
       <h1>How was your experience today?<br><span class="arabic">كيف كانت تجربتك اليوم؟</span></h1>
       <div class="emoji-box" id="emojis">
@@ -98,18 +120,17 @@
         <span class="emoji" onclick="selectEmoji('😄')">😄</span>
       </div>
     </div>
-
     <div id="subquestion" style="display:none">
       <h1>Please fill in your details<br><span class="arabic">يرجى تعبئة التفاصيل</span></h1>
     </div>
-
     <form id="detailsForm" onsubmit="submitForm(event)">
-      <input type="text" id="name" placeholder="Your Name / اسمك" />
-      <input type="text" id="contact" placeholder="Contact Number / رقم التواصل" />
-      <textarea id="comment" rows="3" placeholder="Additional Comments / ملاحظات إضافية"></textarea>
-      <button type="submit">Submit</button>
+      <input type="text" id="name" placeholder="Your Name / اسمك">
+      <input type="text" id="contact" placeholder="Contact Number / رقم التواصل">
+      <textarea rows="3" id="comments" placeholder="Additional Comments / ملاحظات إضافية"></textarea>
+      <button type="submit">Submit
+        <div class="spinner" id="spinner"></div>
+      </button>
     </form>
-
     <div id="thankyou">
       <p>Thank you for your feedback!<br><span class="arabic">شكراً لملاحظاتك!</span></p>
     </div>
@@ -117,47 +138,57 @@
 
   <script>
     let selectedEmoji = "";
-    const office = new URLSearchParams(window.location.search).get("office") || "unknown";
 
     function selectEmoji(emoji) {
       selectedEmoji = emoji;
-      document.getElementById("main-question").style.display = "none";
-      document.getElementById("emojis").style.display = "none";
-      document.getElementById("detailsForm").style.display = "block";
-      document.getElementById("subquestion").style.display = "block";
+      document.getElementById('main-question').style.display = 'none';
+      document.getElementById('emojis').style.display = 'none';
+      document.getElementById('detailsForm').style.display = 'block';
+      document.getElementById('subquestion').style.display = 'block';
     }
 
     function submitForm(e) {
       e.preventDefault();
+      const btn = document.querySelector("button");
+      const spinner = document.getElementById("spinner");
+      btn.disabled = true;
+      spinner.style.display = "block";
+
       const name = document.getElementById("name").value;
       const contact = document.getElementById("contact").value;
-      const comment = document.getElementById("comment").value;
+      const comments = document.getElementById("comments").value;
+      const urlParams = new URLSearchParams(window.location.search);
+      const office = urlParams.get('office') || 'unknown';
 
       fetch("https://sheetdb.io/api/v1/tycgcxuuprkv7", {
-  method: "POST",
-  headers: {
-    "Content-Type": "application/json"
-  },
-  body: JSON.stringify({
-    data: {
-      Emoji: selectedEmoji,
-      Name: name,
-      Contact: contact,
-      Comments: comment,
-      Office: office
-    }
-  })
-})
-
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify({
+          data: {
+            Emoji: selectedEmoji,
+            Name: name,
+            Contact: contact,
+            Comments: comments,
+            Office: office
+          }
+        })
+      })
       .then(response => {
-        if (!response.ok) throw new Error("Bad request");
-        document.getElementById("detailsForm").style.display = "none";
-        document.getElementById("subquestion").style.display = "none";
-        document.getElementById("thankyou").style.display = "block";
-        setTimeout(() => location.reload(), 2500);
+        if (!response.ok) throw new Error("Submission failed");
+        document.getElementById('detailsForm').reset();
+        document.getElementById('detailsForm').style.display = 'none';
+        document.getElementById('subquestion').style.display = 'none';
+        document.getElementById('thankyou').style.display = 'block';
+        setTimeout(() => {
+          location.reload();
+        }, 3000);
       })
       .catch(err => {
         alert("Something went wrong. Please try again.");
+        btn.disabled = false;
+        spinner.style.display = "none";
       });
     }
   </script>
