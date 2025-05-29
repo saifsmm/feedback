@@ -10,77 +10,92 @@
     html, body {
       margin: 0;
       padding: 0;
+      height: 100%;
       font-family: 'IBM Plex Sans', sans-serif;
-      background-color: #ffffff;
+      background-color: #fff;
     }
     body {
       display: flex;
       justify-content: center;
-      align-items: flex-start;
-      min-height: 100vh;
+      align-items: center;
     }
     .card {
       width: 100%;
       max-width: 600px;
-      padding: 2rem;
+      padding: 1rem;
+      text-align: center;
       box-sizing: border-box;
+      position: relative;
     }
     .logo {
       width: 100%;
-      max-width: 380px;
+      max-width: 420px;
       height: auto;
-      margin: 0 auto 1rem auto;
+      margin: 0 auto 2rem auto;
       display: block;
     }
-    .emoji-box {
-      display: flex;
-      justify-content: space-between;
-      margin: 1.5rem 0;
-      font-size: 3rem;
-    }
-    .emoji {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      cursor: pointer;
-      flex: 1;
-    }
-    .emoji-text {
-      font-size: 1rem;
-      margin-top: 0.5rem;
-    }
     h1 {
-      font-size: 1.6rem;
-      text-align: center;
+      font-size: 2.2rem;
+      font-weight: 600;
+      margin: 0 0 1rem 0;
     }
     .arabic {
       font-family: 'IBM Plex Sans Arabic', sans-serif;
     }
+    .emoji-box {
+      display: flex;
+      justify-content: space-between;
+      margin-top: 2rem;
+      font-size: 3rem;
+      flex-wrap: wrap;
+    }
+    .emoji {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      transition: transform 0.2s;
+      cursor: pointer;
+      min-width: 60px;
+    }
+    .emoji:hover {
+      transform: scale(1.2);
+    }
+    .emoji-text {
+      font-size: 1rem;
+      margin-top: 0.4rem;
+    }
+    #subquestion { display: none; }
     form {
       display: none;
-      margin-top: 1.5rem;
+      margin-top: 2rem;
       overflow-y: auto;
-      max-height: 75vh;
-      padding-right: 5px;
+      max-height: 65vh;
     }
     .input-wrapper {
       position: relative;
-      margin-bottom: 1rem;
+      margin-bottom: 1.2rem;
     }
     input, textarea {
       width: 100%;
-      padding: 12px 40px 12px 12px;
+      padding: 14px 42px 14px 14px;
       border: 1px solid #ccc;
       border-radius: 25px;
-      font-size: 1rem;
+      font-size: 1.1rem;
+      font-family: 'IBM Plex Sans', sans-serif;
       box-sizing: border-box;
+      direction: auto;
+    }
+    input::placeholder, textarea::placeholder {
+      text-align: left;
+      font-family: 'IBM Plex Sans Arabic', sans-serif;
     }
     .checkmark, .xmark {
       position: absolute;
       right: 12px;
       top: 50%;
       transform: translateY(-50%);
-      font-size: 1.2rem;
+      font-size: 1.3rem;
       display: none;
     }
     .checkmark { color: green; }
@@ -88,7 +103,7 @@
     .show-check { display: inline; }
     button {
       width: 100%;
-      padding: 12px;
+      padding: 14px;
       font-size: 1rem;
       border: none;
       border-radius: 25px;
@@ -96,19 +111,15 @@
       color: white;
       cursor: pointer;
     }
-    button:disabled {
-      background-color: #b0c5ca;
-      cursor: not-allowed;
-    }
     .loader {
-      border: 4px solid #f3f3f3;
-      border-top: 4px solid #6d9ba5;
-      border-radius: 50%;
+      display: none;
+      margin: 12px auto;
       width: 30px;
       height: 30px;
+      border: 3px solid #f3f3f3;
+      border-top: 3px solid #6d9ba5;
+      border-radius: 50%;
       animation: spin 1s linear infinite;
-      margin: 10px auto;
-      display: none;
     }
     @keyframes spin {
       0% { transform: rotate(0deg); }
@@ -116,30 +127,34 @@
     }
     #thankyou {
       display: none;
-      text-align: center;
+      font-size: 1.5rem;
+      font-weight: 600;
       margin-top: 2rem;
-      font-size: 1.4rem;
-      font-weight: bold;
-    }
-    #backArrow, #skipBtn {
-      position: absolute;
-      top: 10px;
-      font-size: 1.2rem;
-      cursor: pointer;
-      color: black;
     }
     #backArrow {
-      left: 10px;
+      position: absolute;
+      top: 10px;
+      left: 15px;
+      font-size: 1.8rem;
+      cursor: pointer;
+      color: black;
       display: none;
     }
     #skipBtn {
-      right: 10px;
       display: none;
+      margin-bottom: 1.2rem;
       background: none;
-      border: none;
-      font-family: 'IBM Plex Sans', sans-serif;
       color: #6d9ba5;
       font-weight: bold;
+      border: none;
+      font-size: 1rem;
+      cursor: pointer;
+    }
+    @media screen and (max-width: 480px) {
+      h1 { font-size: 1.6rem; }
+      .emoji-box { font-size: 2.3rem; }
+      .emoji-text { font-size: 0.8rem; }
+      input, textarea { font-size: 1rem; }
     }
   </style>
 </head>
@@ -147,7 +162,7 @@
   <div class="card">
     <div id="backArrow" onclick="goBack()">←</div>
     <button id="skipBtn" onclick="skipAndSubmit()">Skip and submit my response</button>
-    <img src="longlogo-dorchester.png" class="logo" />
+    <img src="longlogo-dorchester.png" alt="Dorchester Logo" class="logo" />
     <div id="main-question">
       <h1>How was your experience today?<br><span class="arabic">كيف كانت تجربتك اليوم؟</span></h1>
       <div class="emoji-box" id="emojis">
@@ -158,9 +173,11 @@
         <div class="emoji" onclick="selectEmoji('🥰')">🥰<div class="emoji-text">Excellent</div></div>
       </div>
     </div>
-    <div id="subquestion" style="display:none">
+
+    <div id="subquestion">
       <h1>Please fill in your details<br><span class="arabic">يرجى تعبئة التفاصيل</span></h1>
     </div>
+
     <form id="detailsForm" onsubmit="submitForm(event)">
       <div class="input-wrapper">
         <input type="text" id="name" placeholder="Your Name / اسمك" oninput="validateField(this, 'check-name', 'x-name')">
@@ -179,6 +196,7 @@
       <div class="loader" id="loader"></div>
       <button type="submit" id="submitBtn">Submit</button>
     </form>
+
     <div id="thankyou">
       <p>Thank you for your feedback!<br><span class="arabic">شكراً لملاحظاتك!</span></p>
     </div>
@@ -186,7 +204,6 @@
 
   <script>
     let selectedEmoji = '';
-
     function selectEmoji(emoji) {
       selectedEmoji = emoji;
       document.getElementById('main-question').style.display = 'none';
@@ -194,9 +211,8 @@
       document.getElementById('detailsForm').style.display = 'block';
       document.getElementById('subquestion').style.display = 'block';
       document.getElementById('backArrow').style.display = 'block';
-      document.getElementById('skipBtn').style.display = 'block';
+      document.getElementById('skipBtn').style.display = 'inline-block';
     }
-
     function goBack() {
       document.getElementById('main-question').style.display = 'block';
       document.getElementById('emojis').style.display = 'flex';
@@ -205,7 +221,6 @@
       document.getElementById('backArrow').style.display = 'none';
       document.getElementById('skipBtn').style.display = 'none';
     }
-
     function validateField(input, checkId, xId) {
       if (input.value.trim() === "") {
         document.getElementById(checkId).style.display = "none";
@@ -215,7 +230,55 @@
         document.getElementById(xId).style.display = "none";
       }
     }
-
+    function submitForm(e) {
+      e.preventDefault();
+      const btn = document.getElementById('submitBtn');
+      const loader = document.getElementById('loader');
+      const name = document.getElementById('name');
+      const contact = document.getElementById('contact');
+      if (name.value.trim() === "") {
+        validateField(name, 'check-name', 'x-name');
+        return;
+      }
+      if (contact.value.trim() === "") {
+        validateField(contact, 'check-contact', 'x-contact');
+        return;
+      }
+      btn.disabled = true;
+      loader.style.display = 'block';
+      const comments = document.getElementById('comments').value;
+      const office = new URLSearchParams(window.location.search).get('office') || 'unknown';
+      const data = {
+        data: {
+          Emoji: selectedEmoji,
+          Name: name.value,
+          Contact: contact.value,
+          Comments: comments,
+          Office: office
+        }
+      };
+      fetch('https://sheetdb.io/api/v1/tycgcxuuprkv7', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(data)
+      })
+      .then(() => {
+        document.getElementById('detailsForm').reset();
+        document.getElementById('detailsForm').style.display = 'none';
+        document.getElementById('subquestion').style.display = 'none';
+        document.getElementById('thankyou').style.display = 'block';
+        btn.disabled = false;
+        loader.style.display = 'none';
+        document.getElementById('backArrow').style.display = 'none';
+        document.getElementById('skipBtn').style.display = 'none';
+        setTimeout(() => location.reload(), 3000);
+      })
+      .catch(() => {
+        alert("Something went wrong. Please try again.");
+        btn.disabled = false;
+        loader.style.display = 'none';
+      });
+    }
     function skipAndSubmit() {
       const office = new URLSearchParams(window.location.search).get('office') || 'unknown';
       const data = {
@@ -236,63 +299,9 @@
         document.getElementById('detailsForm').style.display = 'none';
         document.getElementById('subquestion').style.display = 'none';
         document.getElementById('thankyou').style.display = 'block';
-        document.getElementById('backArrow').style.display = 'none';
         document.getElementById('skipBtn').style.display = 'none';
-        setTimeout(() => location.reload(), 3000);
-      });
-    }
-
-    function submitForm(e) {
-      e.preventDefault();
-      const btn = document.getElementById('submitBtn');
-      const loader = document.getElementById('loader');
-      const name = document.getElementById('name');
-      const contact = document.getElementById('contact');
-
-      if (name.value.trim() === "") {
-        validateField(name, 'check-name', 'x-name');
-        return;
-      }
-      if (contact.value.trim() === "") {
-        validateField(contact, 'check-contact', 'x-contact');
-        return;
-      }
-
-      btn.disabled = true;
-      loader.style.display = 'block';
-
-      const comments = document.getElementById('comments').value;
-      const office = new URLSearchParams(window.location.search).get('office') || 'unknown';
-
-      const data = {
-        data: {
-          Emoji: selectedEmoji,
-          Name: name.value,
-          Contact: contact.value,
-          Comments: comments,
-          Office: office
-        }
-      };
-
-      fetch('https://sheetdb.io/api/v1/tycgcxuuprkv7', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(data)
-      })
-      .then(() => {
-        document.getElementById('thankyou').style.display = 'block';
-        document.getElementById('detailsForm').style.display = 'none';
-        document.getElementById('subquestion').style.display = 'none';
-        btn.disabled = false;
-        loader.style.display = 'none';
         document.getElementById('backArrow').style.display = 'none';
-        document.getElementById('skipBtn').style.display = 'none';
         setTimeout(() => location.reload(), 3000);
-      })
-      .catch(() => {
-        alert("Something went wrong. Please try again.");
-        btn.disabled = false;
-        loader.style.display = 'none';
       });
     }
   </script>
