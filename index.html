@@ -19,7 +19,17 @@
       display: flex;
       justify-content: center;
       align-items: center;
-      overflow: hidden;
+    }
+
+    .back-button {
+      position: absolute;
+      top: 20px;
+      left: 20px;
+      font-size: 1.5rem;
+      background: none;
+      border: none;
+      cursor: pointer;
+      font-family: 'IBM Plex Sans', sans-serif;
     }
 
     .card {
@@ -28,7 +38,6 @@
       padding: 2rem;
       text-align: center;
       box-sizing: border-box;
-      position: relative;
     }
 
     .logo {
@@ -93,7 +102,12 @@
       font-size: 1rem;
       box-sizing: border-box;
       font-family: 'IBM Plex Sans', sans-serif;
-      direction: ltr;
+    }
+
+    input::placeholder,
+    textarea::placeholder {
+      text-align: left;
+      font-family: 'IBM Plex Sans', sans-serif;
     }
 
     .checkmark {
@@ -149,21 +163,10 @@
       font-weight: 600;
       margin-top: 2rem;
     }
-
-    .back-btn {
-      position: absolute;
-      left: 1rem;
-      top: 1rem;
-      font-size: 0.9rem;
-      background: none;
-      border: none;
-      color: #6d9ba5;
-      cursor: pointer;
-      font-family: 'IBM Plex Sans', sans-serif;
-    }
   </style>
 </head>
 <body>
+  <button class="back-button" onclick="goBack()">←</button>
   <div class="card">
     <img src="longlogo-dorchester.png" alt="Dorchester Logo" class="logo">
     <div id="main-question">
@@ -176,23 +179,20 @@
         <div class="emoji" onclick="selectEmoji('🥰')">🥰<div class="emoji-text">Excellent</div></div>
       </div>
     </div>
-
     <div id="subquestion" style="display:none">
-      <button class="back-btn" onclick="goBack()">← Back</button>
       <h1>Please fill in your details<br><span class="arabic">يرجى تعبئة التفاصيل</span></h1>
     </div>
-
     <form id="detailsForm" onsubmit="submitForm(event)">
       <div class="input-wrapper">
-        <input type="text" id="name" placeholder="Your Name / اسمك">
+        <input type="text" id="name" placeholder="Your Name / اسمك" oninput="detectDir(this)">
         <span class="checkmark" id="check-name">✔️</span>
       </div>
       <div class="input-wrapper">
-        <input type="text" id="contact" placeholder="Contact Number / رقم التواصل">
+        <input type="text" id="contact" placeholder="Contact Number / رقم التواصل" oninput="detectDir(this)">
         <span class="checkmark" id="check-contact">✔️</span>
       </div>
       <div class="input-wrapper">
-        <textarea rows="3" id="comments" placeholder="Additional Comments / ملاحظات إضافية"></textarea>
+        <textarea rows="3" id="comments" placeholder="Additional Comments / ملاحظات إضافية" oninput="detectDir(this)"></textarea>
         <span class="checkmark" id="check-comments">✔️</span>
       </div>
       <div class="loader" id="loader"></div>
@@ -219,6 +219,11 @@
       document.getElementById('emojis').style.display = 'flex';
       document.getElementById('detailsForm').style.display = 'none';
       document.getElementById('subquestion').style.display = 'none';
+    }
+
+    function detectDir(input) {
+      const val = input.value;
+      input.dir = /[؀-ۿ]/.test(val) ? 'rtl' : 'ltr';
     }
 
     function submitForm(e) {
@@ -275,20 +280,6 @@
         loader.style.display = 'none';
       });
     }
-
-    ['name', 'contact', 'comments'].forEach(id => {
-      const input = document.getElementById(id);
-      input.addEventListener('input', () => {
-        const val = input.value.trim();
-        if (val) {
-          const firstChar = val.charAt(0);
-          const rtl = /[\u0600-\u06FF]/.test(firstChar);
-          input.style.direction = rtl ? 'rtl' : 'ltr';
-        } else {
-          input.style.direction = 'ltr';
-        }
-      });
-    });
   </script>
 </body>
 </html>
