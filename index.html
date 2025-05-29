@@ -14,14 +14,12 @@
       font-family: 'IBM Plex Sans', sans-serif;
       background-color: #ffffff;
     }
-
     body {
       display: flex;
       justify-content: center;
       align-items: center;
       overflow: hidden;
     }
-
     .card {
       width: 100%;
       max-width: 480px;
@@ -30,18 +28,6 @@
       box-sizing: border-box;
       position: relative;
     }
-
-    #back-arrow {
-      position: absolute;
-      top: 16px;
-      left: 16px;
-      font-size: 1.5rem;
-      color: #000;
-      cursor: pointer;
-      text-decoration: none;
-      z-index: 999;
-    }
-
     .logo {
       width: 100%;
       max-width: 380px;
@@ -49,14 +35,12 @@
       margin: 0 auto 1.5rem auto;
       display: block;
     }
-
     .emoji-box {
       display: flex;
       justify-content: space-between;
       margin: 1.5rem 0;
       font-size: 2.5rem;
     }
-
     .emoji {
       display: flex;
       flex-direction: column;
@@ -65,36 +49,29 @@
       transition: transform 0.2s;
       flex: 1;
     }
-
     .emoji:hover {
       transform: scale(1.2);
     }
-
     .emoji-text {
       font-size: 0.9rem;
       margin-top: 0.5rem;
       font-family: 'IBM Plex Sans', sans-serif;
     }
-
     h1 {
       font-size: 1.4rem;
       margin-bottom: 0.5rem;
       font-weight: 600;
     }
-
     .arabic {
       font-family: 'IBM Plex Sans Arabic', sans-serif;
     }
-
     form {
       display: none;
       margin-top: 2rem;
     }
-
     .input-wrapper {
       position: relative;
     }
-
     input, textarea {
       width: 100%;
       padding: 12px 36px 12px 12px;
@@ -104,8 +81,12 @@
       font-size: 1rem;
       box-sizing: border-box;
       font-family: 'IBM Plex Sans', sans-serif;
+      direction: auto;
     }
-
+    input::placeholder, textarea::placeholder {
+      text-align: left;
+      font-family: 'IBM Plex Sans Arabic', sans-serif;
+    }
     .checkmark, .xmark {
       position: absolute;
       right: 10px;
@@ -114,19 +95,15 @@
       font-size: 1.2rem;
       display: none;
     }
-
     .checkmark {
       color: green;
     }
-
     .xmark {
       color: red;
     }
-
     .show-check {
       display: inline;
     }
-
     button {
       width: 100%;
       padding: 12px;
@@ -138,12 +115,10 @@
       cursor: pointer;
       font-family: 'IBM Plex Sans', sans-serif;
     }
-
     button:disabled {
       background-color: #b0c5ca;
       cursor: not-allowed;
     }
-
     .loader {
       border: 3px solid #f3f3f3;
       border-radius: 50%;
@@ -154,24 +129,31 @@
       margin: 10px auto;
       display: none;
     }
-
     @keyframes spin {
       0% { transform: rotate(0deg); }
       100% { transform: rotate(360deg); }
     }
-
     #thankyou {
       display: none;
       font-size: 1.4rem;
       font-weight: 600;
       margin-top: 2rem;
     }
+    #backArrow {
+      position: absolute;
+      top: 10px;
+      left: 15px;
+      font-size: 1.5rem;
+      cursor: pointer;
+      color: black;
+      display: none;
+    }
   </style>
 </head>
 <body>
   <div class="card">
-    <a id="back-arrow" onclick="goBack()">←</a>
-    <img src="longlogo-dorchester.png" alt="Dorchester Logo" class="logo">
+    <div id="backArrow" onclick="goBack()">←</div>
+    <img src="longlogo-dorchester.png" alt="Dorchester Logo" class="logo" />
     <div id="main-question">
       <h1>How was your experience today?<br><span class="arabic">كيف كانت تجربتك اليوم؟</span></h1>
       <div class="emoji-box" id="emojis">
@@ -182,19 +164,17 @@
         <div class="emoji" onclick="selectEmoji('🥰')">🥰<div class="emoji-text">Excellent</div></div>
       </div>
     </div>
-
     <div id="subquestion" style="display:none">
       <h1>Please fill in your details<br><span class="arabic">يرجى تعبئة التفاصيل</span></h1>
     </div>
-
     <form id="detailsForm" onsubmit="submitForm(event)">
       <div class="input-wrapper">
-        <input type="text" id="name" placeholder="Your Name / اسمك">
+        <input type="text" id="name" placeholder="Your Name / اسمك" oninput="validateField(this, 'check-name', 'x-name')">
         <span class="checkmark" id="check-name">✔️</span>
         <span class="xmark" id="x-name">❌</span>
       </div>
       <div class="input-wrapper">
-        <input type="text" id="contact" placeholder="Contact Number / رقم التواصل">
+        <input type="text" id="contact" placeholder="Contact Number / رقم التواصل" oninput="validateField(this, 'check-contact', 'x-contact')">
         <span class="checkmark" id="check-contact">✔️</span>
         <span class="xmark" id="x-contact">❌</span>
       </div>
@@ -205,7 +185,6 @@
       <div class="loader" id="loader"></div>
       <button type="submit" id="submitBtn">Submit</button>
     </form>
-
     <div id="thankyou">
       <p>Thank you for your feedback!<br><span class="arabic">شكراً لملاحظاتك!</span></p>
     </div>
@@ -220,6 +199,7 @@
       document.getElementById('emojis').style.display = 'none';
       document.getElementById('detailsForm').style.display = 'block';
       document.getElementById('subquestion').style.display = 'block';
+      document.getElementById('backArrow').style.display = 'block';
     }
 
     function goBack() {
@@ -227,41 +207,39 @@
       document.getElementById('emojis').style.display = 'flex';
       document.getElementById('detailsForm').style.display = 'none';
       document.getElementById('subquestion').style.display = 'none';
+      document.getElementById('backArrow').style.display = 'none';
+    }
+
+    function validateField(input, checkId, xId) {
+      if (input.value.trim() === "") {
+        document.getElementById(checkId).style.display = "none";
+        document.getElementById(xId).style.display = "inline";
+      } else {
+        document.getElementById(checkId).style.display = "inline";
+        document.getElementById(xId).style.display = "none";
+      }
     }
 
     function submitForm(e) {
       e.preventDefault();
-      const name = document.getElementById('name');
-      const contact = document.getElementById('contact');
-      const comments = document.getElementById('comments');
       const btn = document.getElementById('submitBtn');
       const loader = document.getElementById('loader');
+      const name = document.getElementById('name');
+      const contact = document.getElementById('contact');
 
-      let valid = true;
-
-      if (!name.value.trim()) {
-        document.getElementById('check-name').style.display = 'none';
-        document.getElementById('x-name').style.display = 'inline';
-        valid = false;
-      } else {
-        document.getElementById('check-name').style.display = 'inline';
-        document.getElementById('x-name').style.display = 'none';
+      if (name.value.trim() === "") {
+        validateField(name, 'check-name', 'x-name');
+        return;
       }
-
-      if (!contact.value.trim()) {
-        document.getElementById('check-contact').style.display = 'none';
-        document.getElementById('x-contact').style.display = 'inline';
-        valid = false;
-      } else {
-        document.getElementById('check-contact').style.display = 'inline';
-        document.getElementById('x-contact').style.display = 'none';
+      if (contact.value.trim() === "") {
+        validateField(contact, 'check-contact', 'x-contact');
+        return;
       }
-
-      if (!valid) return;
 
       btn.disabled = true;
       loader.style.display = 'block';
 
+      const comments = document.getElementById('comments').value;
       const office = new URLSearchParams(window.location.search).get('office') || 'unknown';
 
       const data = {
@@ -269,7 +247,7 @@
           Emoji: selectedEmoji,
           Name: name.value,
           Contact: contact.value,
-          Comments: comments.value,
+          Comments: comments,
           Office: office
         }
       };
@@ -284,6 +262,9 @@
         return response.json();
       })
       .then(() => {
+        document.getElementById('check-name').classList.add('show-check');
+        document.getElementById('check-contact').classList.add('show-check');
+        document.getElementById('check-comments').classList.add('show-check');
         setTimeout(() => {
           document.getElementById('detailsForm').reset();
           document.getElementById('detailsForm').style.display = 'none';
@@ -291,11 +272,10 @@
           document.getElementById('thankyou').style.display = 'block';
           btn.disabled = false;
           loader.style.display = 'none';
-          document.getElementById('check-name').style.display = 'none';
-          document.getElementById('check-contact').style.display = 'none';
-          document.getElementById('check-comments').style.display = 'none';
-          document.getElementById('x-name').style.display = 'none';
-          document.getElementById('x-contact').style.display = 'none';
+          document.getElementById('check-name').classList.remove('show-check');
+          document.getElementById('check-contact').classList.remove('show-check');
+          document.getElementById('check-comments').classList.remove('show-check');
+          document.getElementById('backArrow').style.display = 'none';
           setTimeout(() => location.reload(), 3000);
         }, 1500);
       })
