@@ -1,9 +1,9 @@
 <!DOCTYPE html>
 <html lang="en" dir="ltr">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Customer Happiness</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Customer Feedback</title>
   <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;600&display=swap" rel="stylesheet">
   <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Arabic:wght@400;600&display=swap" rel="stylesheet">
   <style>
@@ -26,7 +26,7 @@
     }
     .logo {
       width: 100%;
-      max-width: 360px;
+      max-width: 380px;
       height: auto;
       margin: 0 auto 1.5rem auto;
       display: block;
@@ -50,9 +50,6 @@
     }
     .arabic {
       font-family: 'IBM Plex Sans Arabic', sans-serif;
-    }
-    #main-question {
-      display: block;
     }
     form {
       display: none;
@@ -90,8 +87,7 @@
 </head>
 <body>
   <div class="card">
-    <img src="logo%20long%20no%20background%20(1).png" alt="Dorchester Logo" class="logo">
-    
+    <img src="logo long no background (1).png" alt="Dorchester Logo" class="logo" />
     <div id="main-question">
       <h1>How was your experience today?<br><span class="arabic">كيف كانت تجربتك اليوم؟</span></h1>
       <div class="emoji-box" id="emojis">
@@ -108,8 +104,8 @@
     </div>
 
     <form id="detailsForm" onsubmit="submitForm(event)">
-      <input id="name" type="text" placeholder="Your Name / اسمك">
-      <input id="contact" type="text" placeholder="Contact Number / رقم التواصل">
+      <input type="text" id="name" placeholder="Your Name / اسمك" />
+      <input type="text" id="contact" placeholder="Contact Number / رقم التواصل" />
       <textarea id="comment" rows="3" placeholder="Additional Comments / ملاحظات إضافية"></textarea>
       <button type="submit">Submit</button>
     </form>
@@ -125,10 +121,10 @@
 
     function selectEmoji(emoji) {
       selectedEmoji = emoji;
-      document.getElementById('main-question').style.display = 'none';
-      document.getElementById('emojis').style.display = 'none';
-      document.getElementById('detailsForm').style.display = 'block';
-      document.getElementById('subquestion').style.display = 'block';
+      document.getElementById("main-question").style.display = "none";
+      document.getElementById("emojis").style.display = "none";
+      document.getElementById("detailsForm").style.display = "block";
+      document.getElementById("subquestion").style.display = "block";
     }
 
     function submitForm(e) {
@@ -144,28 +140,22 @@
         },
         body: JSON.stringify({
           data: {
-            emoji: selectedEmoji,
-            name: name,
-            contact: contact,
-            comment: comment,
-            office: office
+            Emoji: selectedEmoji,
+            Name: name,
+            Contact: contact,
+            Comments: comment,
+            Office: office
           }
         })
       })
       .then(response => {
-        if (response.ok) {
-          document.getElementById('detailsForm').reset();
-          document.getElementById('detailsForm').style.display = 'none';
-          document.getElementById('subquestion').style.display = 'none';
-          document.getElementById('thankyou').style.display = 'block';
-          setTimeout(() => {
-            window.location.reload();
-          }, 5000);
-        } else {
-          alert("Something went wrong. Please try again.");
-        }
+        if (!response.ok) throw new Error("Bad request");
+        document.getElementById("detailsForm").style.display = "none";
+        document.getElementById("subquestion").style.display = "none";
+        document.getElementById("thankyou").style.display = "block";
+        setTimeout(() => location.reload(), 2500);
       })
-      .catch(error => {
+      .catch(err => {
         alert("Something went wrong. Please try again.");
       });
     }
