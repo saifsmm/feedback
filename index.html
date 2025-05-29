@@ -12,20 +12,21 @@
       padding: 0;
       height: 100%;
       font-family: 'IBM Plex Sans', sans-serif;
-      background-color: #ffffff;
-      font-size: 1.8rem;
+      background-color: #fff;
+      font-size: 1.6rem;
+      overflow: auto;
     }
 
     body {
       display: flex;
       justify-content: center;
-      align-items: center;
-      overflow: hidden;
+      align-items: flex-start;
     }
 
     .card {
-      width: 90%;
-      padding: 3rem;
+      width: 100%;
+      max-width: 900px;
+      padding: 2rem;
       text-align: center;
       box-sizing: border-box;
       position: relative;
@@ -33,15 +34,26 @@
 
     .logo {
       width: 100%;
-      max-width: 420px;
+      max-width: 400px;
       height: auto;
-      margin: 0 auto 2rem auto;
+      margin: 0 auto 1.5rem auto;
       display: block;
+    }
+
+    h1 {
+      font-size: 2.8rem;
+      margin-bottom: 1rem;
+      font-weight: 600;
+    }
+
+    .arabic {
+      font-family: 'IBM Plex Sans Arabic', sans-serif;
+      font-size: 2.4rem;
     }
 
     .emoji-box {
       display: flex;
-      justify-content: space-around;
+      justify-content: space-between;
       margin: 2rem 0;
       font-size: 4rem;
     }
@@ -50,9 +62,9 @@
       display: flex;
       flex-direction: column;
       align-items: center;
+      flex: 1;
       cursor: pointer;
       transition: transform 0.2s;
-      flex: 1;
     }
 
     .emoji:hover {
@@ -60,24 +72,17 @@
     }
 
     .emoji-text {
-      font-size: 1.1rem;
+      font-size: 1.4rem;
       margin-top: 0.5rem;
-      font-family: 'IBM Plex Sans', sans-serif;
     }
 
-    h1 {
-      font-size: 2.2rem;
-      margin-bottom: 0.7rem;
-      font-weight: 600;
-    }
-
-    .arabic {
-      font-family: 'IBM Plex Sans Arabic', sans-serif;
+    #subquestion {
+      display: none;
     }
 
     form {
       display: none;
-      margin-top: 3rem;
+      margin-top: 2rem;
     }
 
     .input-wrapper {
@@ -86,14 +91,13 @@
 
     input, textarea {
       width: 100%;
-      padding: 18px 48px 18px 18px;
-      border: 1px solid #ccc;
-      border-radius: 30px;
-      margin-bottom: 1.5rem;
+      padding: 16px 40px 16px 16px;
       font-size: 1.4rem;
-      box-sizing: border-box;
-      font-family: 'IBM Plex Sans', sans-serif;
+      border-radius: 25px;
+      border: 1px solid #ccc;
+      margin-bottom: 1rem;
       direction: auto;
+      font-family: 'IBM Plex Sans', sans-serif;
     }
 
     input::placeholder, textarea::placeholder {
@@ -106,7 +110,7 @@
       right: 14px;
       top: 50%;
       transform: translateY(-50%);
-      font-size: 1.6rem;
+      font-size: 1.4rem;
       display: none;
     }
 
@@ -124,14 +128,13 @@
 
     button {
       width: 100%;
-      padding: 16px;
+      padding: 14px;
       font-size: 1.4rem;
       border: none;
-      border-radius: 30px;
+      border-radius: 25px;
       background-color: #6d9ba5;
       color: white;
       cursor: pointer;
-      font-family: 'IBM Plex Sans', sans-serif;
     }
 
     button:disabled {
@@ -141,10 +144,10 @@
 
     .loader {
       border: 4px solid #f3f3f3;
-      border-radius: 50%;
       border-top: 4px solid #6d9ba5;
-      width: 36px;
-      height: 36px;
+      border-radius: 50%;
+      width: 32px;
+      height: 32px;
       animation: spin 1s linear infinite;
       margin: 12px auto;
       display: none;
@@ -159,12 +162,12 @@
       display: none;
       font-size: 2rem;
       font-weight: 600;
-      margin-top: 3rem;
+      margin-top: 2rem;
     }
 
     #backArrow {
       position: absolute;
-      top: 10px;
+      top: 15px;
       left: 15px;
       font-size: 2rem;
       cursor: pointer;
@@ -176,7 +179,7 @@
 <body>
   <div class="card">
     <div id="backArrow" onclick="goBack()">←</div>
-    <img src="longlogo-dorchester.png" alt="Dorchester Logo" class="logo" />
+    <img src="longlogo-dorchester.png" alt="Dorchester Logo" class="logo">
     <div id="main-question">
       <h1>How was your experience today?<br><span class="arabic">كيف كانت تجربتك اليوم؟</span></h1>
       <div class="emoji-box" id="emojis">
@@ -187,9 +190,11 @@
         <div class="emoji" onclick="selectEmoji('🥰')">🥰<div class="emoji-text">Excellent</div></div>
       </div>
     </div>
-    <div id="subquestion" style="display:none">
+
+    <div id="subquestion">
       <h1>Please fill in your details<br><span class="arabic">يرجى تعبئة التفاصيل</span></h1>
     </div>
+
     <form id="detailsForm" onsubmit="submitForm(event)">
       <div class="input-wrapper">
         <input type="text" id="name" placeholder="Your Name / اسمك" oninput="validateField(this, 'check-name', 'x-name')">
@@ -202,12 +207,13 @@
         <span class="xmark" id="x-contact">❌</span>
       </div>
       <div class="input-wrapper">
-        <textarea rows="3" id="comments" placeholder="Additional Comments / ملاحظات إضافية"></textarea>
+        <textarea id="comments" rows="3" placeholder="Additional Comments / ملاحظات إضافية"></textarea>
         <span class="checkmark" id="check-comments">✔️</span>
       </div>
       <div class="loader" id="loader"></div>
       <button type="submit" id="submitBtn">Submit</button>
     </form>
+
     <div id="thankyou">
       <p>Thank you for your feedback!<br><span class="arabic">شكراً لملاحظاتك!</span></p>
     </div>
@@ -280,30 +286,16 @@
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(data)
       })
-      .then(response => {
-        if (!response.ok) throw new Error('Network error');
-        return response.json();
-      })
+      .then(response => response.json())
       .then(() => {
-        document.getElementById('check-name').classList.add('show-check');
-        document.getElementById('check-contact').classList.add('show-check');
-        document.getElementById('check-comments').classList.add('show-check');
-        setTimeout(() => {
-          document.getElementById('detailsForm').reset();
-          document.getElementById('detailsForm').style.display = 'none';
-          document.getElementById('subquestion').style.display = 'none';
-          document.getElementById('thankyou').style.display = 'block';
-          btn.disabled = false;
-          loader.style.display = 'none';
-          document.getElementById('check-name').classList.remove('show-check');
-          document.getElementById('check-contact').classList.remove('show-check');
-          document.getElementById('check-comments').classList.remove('show-check');
-          document.getElementById('backArrow').style.display = 'none';
-          setTimeout(() => location.reload(), 3000);
-        }, 1500);
+        document.getElementById('thankyou').style.display = 'block';
+        document.getElementById('detailsForm').style.display = 'none';
+        document.getElementById('subquestion').style.display = 'none';
+        loader.style.display = 'none';
+        setTimeout(() => location.reload(), 3000);
       })
       .catch(() => {
-        alert("Something went wrong. Please try again.");
+        alert("Submission failed. Please try again.");
         btn.disabled = false;
         loader.style.display = 'none';
       });
