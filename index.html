@@ -4,7 +4,8 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Customer Happiness</title>
-  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;600&display=swap&subset=arabic" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;600&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Arabic:wght@400;600&display=swap" rel="stylesheet">
   <style>
     body {
       font-family: 'IBM Plex Sans', sans-serif;
@@ -48,6 +49,9 @@
       margin-bottom: 0.5rem;
       font-weight: 600;
     }
+    .arabic {
+      font-family: 'IBM Plex Sans Arabic', sans-serif;
+    }
     form {
       display: none;
       margin-top: 2rem;
@@ -79,13 +83,13 @@
 <body>
   <div class="card">
     <img src="logo long no background (1).png" alt="Dorchester Logo" class="logo">
-    <h1>How was your experience today?<br><span style="font-weight: normal; font-family: 'IBM Plex Sans Arabic', sans-serif;">كيف كانت تجربتك اليوم؟</span></h1>
-    <div class="emoji-box" onclick="showForm()">
-      <span class="emoji">😠</span>
-      <span class="emoji">😞</span>
-      <span class="emoji">😐</span>
-      <span class="emoji">🙂</span>
-      <span class="emoji">😄</span>
+    <h1>How was your experience today?<br><span class="arabic">كيف كانت تجربتك اليوم؟</span></h1>
+    <div class="emoji-box" id="emojis">
+      <span class="emoji" onclick="selectEmoji()">😠</span>
+      <span class="emoji" onclick="selectEmoji()">😞</span>
+      <span class="emoji" onclick="selectEmoji()">😐</span>
+      <span class="emoji" onclick="selectEmoji()">🙂</span>
+      <span class="emoji" onclick="selectEmoji()">😄</span>
     </div>
     <form id="detailsForm">
       <input type="text" placeholder="Your Name / اسمك">
@@ -96,7 +100,8 @@
   </div>
 
   <script>
-    function showForm() {
+    function selectEmoji() {
+      document.getElementById('emojis').style.display = 'none';
       document.getElementById('detailsForm').style.display = 'block';
     }
   </script>
