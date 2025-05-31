@@ -124,16 +124,46 @@
       display: inline;
     }
 
+    .button-container {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      margin-top: 1rem;
+    }
+
     button {
       width: 100%;
       padding: 14px;
       font-size: 1rem;
       border: none;
       border-radius: 25px;
-      background-color: #6d9ba5;
-      color: white;
       cursor: pointer;
       font-family: 'IBM Plex Sans', sans-serif;
+      transition: background-color 0.3s, opacity 0.3s;
+    }
+
+    .skip-btn {
+      background-color: #b8d4d8;
+      color: #333;
+    }
+
+    .skip-btn:hover {
+      background-color: #a5c7cc;
+    }
+
+    .submit-btn {
+      background-color: #6d9ba5;
+      color: white;
+    }
+
+    .submit-btn:hover {
+      background-color: #5a8289;
+    }
+
+    .submit-btn:disabled {
+      background-color: #ccc;
+      cursor: not-allowed;
+      opacity: 0.6;
     }
 
     .loader {
@@ -160,13 +190,32 @@
     }
 
     #backArrow {
-      position: absolute;
-      top: 10px;
-      left: 15px;
-      font-size: 1.8rem;
+      position: fixed;
+      top: 20px;
+      left: 20px;
+      font-size: 2.5rem;
       cursor: pointer;
-      color: black;
+      color: #6d9ba5;
       display: none;
+      background: rgba(255, 255, 255, 0.9);
+      border-radius: 50%;
+      width: 50px;
+      height: 50px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+      transition: all 0.3s ease;
+      z-index: 1000;
+    }
+
+    #backArrow:hover {
+      background: rgba(109, 155, 165, 0.1);
+      transform: scale(1.1);
+    }
+
+    #backArrow.show {
+      display: flex;
     }
 
     @media screen and (max-width: 480px) {
@@ -181,6 +230,13 @@
       }
       input, textarea {
         font-size: 1rem;
+      }
+      #backArrow {
+        width: 45px;
+        height: 45px;
+        font-size: 2.2rem;
+        top: 15px;
+        left: 15px;
       }
     }
   </style>
@@ -206,7 +262,7 @@
 
     <form id="detailsForm" onsubmit="submitForm(event)">
       <div class="input-wrapper">
-        <input type="text" id="name" placeholder="Your Name / اسمك" oninput="validateField(this, 'check-name', 'x-name')">
+        <input type="text" id="name" placeholder="Your Name / اسمك" oninput="validateField(this, 'check-name', 'x-name'); checkSubmitButton()">
         <span class="checkmark" id="check-name">✔️</span>
         <span class="xmark" id="x-name">❌</span>
       </div>
@@ -216,12 +272,14 @@
         <span class="xmark" id="x-contact">❌</span>
       </div>
       <div class="input-wrapper">
-        <textarea rows="3" id="comments" placeholder="Additional Comments / ملاحظات إضافية"></textarea>
+        <textarea rows="3" id="comments" placeholder="Additional Comments / ملاحظات إضافية" oninput="checkSubmitButton()"></textarea>
         <span class="checkmark" id="check-comments">✔️</span>
       </div>
       <div class="loader" id="loader"></div>
-      <button type="button" onclick="skipSubmit()">Skip and Submit</button>
-      <button type="submit" id="submitBtn">Submit</button>
+      <div class="button-container">
+        <button type="button" class="skip-btn" onclick="skipSubmit()">Skip and Submit</button>
+        <button type="submit" class="submit-btn" id="submitBtn" disabled>Submit</button>
+      </div>
     </form>
 
     <div id="thankyou">
@@ -238,7 +296,8 @@
       document.getElementById('emojis').style.display = 'none';
       document.getElementById('detailsForm').style.display = 'block';
       document.getElementById('subquestion').style.display = 'block';
-      document.getElementById('backArrow').style.display = 'block';
+      document.getElementById('backArrow').classList.add('show');
+      checkSubmitButton(); // Check if submit should be enabled
     }
 
     function goBack() {
@@ -246,7 +305,7 @@
       document.getElementById('emojis').style.display = 'flex';
       document.getElementById('detailsForm').style.display = 'none';
       document.getElementById('subquestion').style.display = 'none';
-      document.getElementById('backArrow').style.display = 'none';
+      document.getElementById('backArrow').classList.remove('show');
     }
 
     function validateField(input, checkId, xId) {
@@ -256,6 +315,19 @@
       } else {
         document.getElementById(checkId).style.display = "inline";
         document.getElementById(xId).style.display = "none";
+      }
+    }
+
+    function checkSubmitButton() {
+      const name = document.getElementById('name').value.trim();
+      const comments = document.getElementById('comments').value.trim();
+      const submitBtn = document.getElementById('submitBtn');
+      
+      // Enable submit button if either name OR comments is filled
+      if (name !== '' || comments !== '') {
+        submitBtn.disabled = false;
+      } else {
+        submitBtn.disabled = true;
       }
     }
 
@@ -284,7 +356,7 @@
         document.getElementById('detailsForm').style.display = 'none';
         document.getElementById('subquestion').style.display = 'none';
         document.getElementById('thankyou').style.display = 'block';
-        document.getElementById('backArrow').style.display = 'none';
+        document.getElementById('backArrow').classList.remove('show');
         setTimeout(() => location.reload(), 3000);
       })
       .catch(() => {
@@ -296,29 +368,26 @@
       e.preventDefault();
       const btn = document.getElementById('submitBtn');
       const loader = document.getElementById('loader');
-      const name = document.getElementById('name');
-      const contact = document.getElementById('contact');
+      const name = document.getElementById('name').value.trim();
+      const comments = document.getElementById('comments').value.trim();
 
-      if (name.value.trim() === "") {
-        validateField(name, 'check-name', 'x-name');
-        return;
-      }
-      if (contact.value.trim() === "") {
-        validateField(contact, 'check-contact', 'x-contact');
+      // Check if at least name OR comments is filled
+      if (name === '' && comments === '') {
+        alert('Please fill in your name or add a comment before submitting.');
         return;
       }
 
       btn.disabled = true;
       loader.style.display = 'block';
 
-      const comments = document.getElementById('comments').value;
+      const contact = document.getElementById('contact').value.trim();
       const office = new URLSearchParams(window.location.search).get('office') || 'unknown';
 
       const data = {
         data: {
           Emoji: selectedEmoji,
-          Name: name.value,
-          Contact: contact.value,
+          Name: name,
+          Contact: contact,
           Comments: comments,
           Office: office
         }
@@ -334,9 +403,10 @@
         return response.json();
       })
       .then(() => {
-        document.getElementById('check-name').classList.add('show-check');
-        document.getElementById('check-contact').classList.add('show-check');
-        document.getElementById('check-comments').classList.add('show-check');
+        if (name) document.getElementById('check-name').classList.add('show-check');
+        if (contact) document.getElementById('check-contact').classList.add('show-check');
+        if (comments) document.getElementById('check-comments').classList.add('show-check');
+        
         setTimeout(() => {
           document.getElementById('detailsForm').reset();
           document.getElementById('detailsForm').style.display = 'none';
@@ -347,7 +417,7 @@
           document.getElementById('check-name').classList.remove('show-check');
           document.getElementById('check-contact').classList.remove('show-check');
           document.getElementById('check-comments').classList.remove('show-check');
-          document.getElementById('backArrow').style.display = 'none';
+          document.getElementById('backArrow').classList.remove('show');
           setTimeout(() => location.reload(), 3000);
         }, 1500);
       })
@@ -359,5 +429,4 @@
     }
   </script>
 </body>
-</html>
 </html>
