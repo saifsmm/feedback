@@ -80,10 +80,14 @@
     }
 
     form {
-      display: none;
+      display: none !important;  /* Force hidden on landing page */
       margin-top: 2rem;
       overflow-y: auto;
       max-height: 65vh;
+    }
+    
+    form.show {
+      display: block !important;  /* Only show when explicitly activated */
     }
 
     .input-wrapper {
@@ -196,12 +200,11 @@
       font-size: 2.5rem;
       cursor: pointer;
       color: #6d9ba5;
-      display: none;
+      display: none !important;  /* Force hidden on landing page */
       background: rgba(255, 255, 255, 0.9);
       border-radius: 50%;
       width: 50px;
       height: 50px;
-      display: flex;
       align-items: center;
       justify-content: center;
       box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
@@ -215,7 +218,7 @@
     }
 
     #backArrow.show {
-      display: flex;
+      display: flex !important;  /* Only show when explicitly activated */
     }
 
     @media screen and (max-width: 480px) {
@@ -294,7 +297,7 @@
       selectedEmoji = emoji;
       document.getElementById('main-question').style.display = 'none';
       document.getElementById('emojis').style.display = 'none';
-      document.getElementById('detailsForm').style.display = 'block';
+      document.getElementById('detailsForm').classList.add('show');
       document.getElementById('subquestion').style.display = 'block';
       document.getElementById('backArrow').classList.add('show');
       checkSubmitButton(); // Check if submit should be enabled
@@ -303,7 +306,7 @@
     function goBack() {
       document.getElementById('main-question').style.display = 'block';
       document.getElementById('emojis').style.display = 'flex';
-      document.getElementById('detailsForm').style.display = 'none';
+      document.getElementById('detailsForm').classList.remove('show');
       document.getElementById('subquestion').style.display = 'none';
       document.getElementById('backArrow').classList.remove('show');
     }
@@ -332,6 +335,14 @@
     }
 
     function skipSubmit() {
+      const skipBtn = document.querySelector('.skip-btn');
+      const loader = document.getElementById('loader');
+      
+      // Show loading state
+      skipBtn.disabled = true;
+      skipBtn.textContent = 'Submitting...';
+      loader.style.display = 'block';
+      
       const office = new URLSearchParams(window.location.search).get('office') || 'unknown';
       const data = {
         data: {
@@ -353,7 +364,7 @@
         return response.json();
       })
       .then(() => {
-        document.getElementById('detailsForm').style.display = 'none';
+        document.getElementById('detailsForm').classList.remove('show');
         document.getElementById('subquestion').style.display = 'none';
         document.getElementById('thankyou').style.display = 'block';
         document.getElementById('backArrow').classList.remove('show');
@@ -361,6 +372,10 @@
       })
       .catch(() => {
         alert("Something went wrong. Please try again.");
+        // Reset button state on error
+        skipBtn.disabled = false;
+        skipBtn.textContent = 'Skip and Submit';
+        loader.style.display = 'none';
       });
     }
 
@@ -409,7 +424,7 @@
         
         setTimeout(() => {
           document.getElementById('detailsForm').reset();
-          document.getElementById('detailsForm').style.display = 'none';
+          document.getElementById('detailsForm').classList.remove('show');
           document.getElementById('subquestion').style.display = 'none';
           document.getElementById('thankyou').style.display = 'block';
           btn.disabled = false;
