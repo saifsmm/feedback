@@ -14,11 +14,13 @@
       font-family: 'IBM Plex Sans', sans-serif;
       background-color: #fff;
     }
+
     body {
       display: flex;
       justify-content: center;
       align-items: center;
     }
+
     .card {
       width: 100%;
       max-width: 600px;
@@ -27,6 +29,7 @@
       box-sizing: border-box;
       position: relative;
     }
+
     .logo {
       width: 100%;
       max-width: 420px;
@@ -34,14 +37,17 @@
       margin: 0 auto 2rem auto;
       display: block;
     }
+
     h1 {
       font-size: 2.2rem;
       font-weight: 600;
       margin: 0 0 1rem 0;
     }
+
     .arabic {
       font-family: 'IBM Plex Sans Arabic', sans-serif;
     }
+
     .emoji-box {
       display: flex;
       justify-content: space-between;
@@ -49,6 +55,7 @@
       font-size: 3rem;
       flex-wrap: wrap;
     }
+
     .emoji {
       flex: 1;
       display: flex;
@@ -58,24 +65,32 @@
       cursor: pointer;
       min-width: 60px;
     }
+
     .emoji:hover {
       transform: scale(1.2);
     }
+
     .emoji-text {
       font-size: 1rem;
       margin-top: 0.4rem;
     }
-    #subquestion { display: none; }
+
+    #subquestion {
+      display: none;
+    }
+
     form {
       display: none;
       margin-top: 2rem;
       overflow-y: auto;
       max-height: 65vh;
     }
+
     .input-wrapper {
       position: relative;
       margin-bottom: 1.2rem;
     }
+
     input, textarea {
       width: 100%;
       padding: 14px 42px 14px 14px;
@@ -86,10 +101,13 @@
       box-sizing: border-box;
       direction: auto;
     }
-    input::placeholder, textarea::placeholder {
+
+    input::placeholder,
+    textarea::placeholder {
       text-align: left;
       font-family: 'IBM Plex Sans Arabic', sans-serif;
     }
+
     .checkmark, .xmark {
       position: absolute;
       right: 12px;
@@ -98,9 +116,14 @@
       font-size: 1.3rem;
       display: none;
     }
+
     .checkmark { color: green; }
     .xmark { color: red; }
-    .show-check { display: inline; }
+
+    .show-check {
+      display: inline;
+    }
+
     button {
       width: 100%;
       padding: 14px;
@@ -110,7 +133,9 @@
       background-color: #6d9ba5;
       color: white;
       cursor: pointer;
+      font-family: 'IBM Plex Sans', sans-serif;
     }
+
     .loader {
       display: none;
       margin: 12px auto;
@@ -121,16 +146,19 @@
       border-radius: 50%;
       animation: spin 1s linear infinite;
     }
+
     @keyframes spin {
       0% { transform: rotate(0deg); }
       100% { transform: rotate(360deg); }
     }
+
     #thankyou {
       display: none;
       font-size: 1.5rem;
       font-weight: 600;
       margin-top: 2rem;
     }
+
     #backArrow {
       position: absolute;
       top: 10px;
@@ -140,28 +168,26 @@
       color: black;
       display: none;
     }
-    #skipBtn {
-      display: none;
-      margin-bottom: 1.2rem;
-      background: none;
-      color: #6d9ba5;
-      font-weight: bold;
-      border: none;
-      font-size: 1rem;
-      cursor: pointer;
-    }
+
     @media screen and (max-width: 480px) {
-      h1 { font-size: 1.6rem; }
-      .emoji-box { font-size: 2.3rem; }
-      .emoji-text { font-size: 0.8rem; }
-      input, textarea { font-size: 1rem; }
+      h1 {
+        font-size: 1.6rem;
+      }
+      .emoji-box {
+        font-size: 2.3rem;
+      }
+      .emoji-text {
+        font-size: 0.8rem;
+      }
+      input, textarea {
+        font-size: 1rem;
+      }
     }
   </style>
 </head>
 <body>
   <div class="card">
     <div id="backArrow" onclick="goBack()">←</div>
-    <button id="skipBtn" onclick="skipAndSubmit()">Skip and submit my response</button>
     <img src="longlogo-dorchester.png" alt="Dorchester Logo" class="logo" />
     <div id="main-question">
       <h1>How was your experience today?<br><span class="arabic">كيف كانت تجربتك اليوم؟</span></h1>
@@ -194,6 +220,7 @@
         <span class="checkmark" id="check-comments">✔️</span>
       </div>
       <div class="loader" id="loader"></div>
+      <button type="button" onclick="skipSubmit()">Skip and Submit</button>
       <button type="submit" id="submitBtn">Submit</button>
     </form>
 
@@ -204,6 +231,7 @@
 
   <script>
     let selectedEmoji = '';
+
     function selectEmoji(emoji) {
       selectedEmoji = emoji;
       document.getElementById('main-question').style.display = 'none';
@@ -211,16 +239,16 @@
       document.getElementById('detailsForm').style.display = 'block';
       document.getElementById('subquestion').style.display = 'block';
       document.getElementById('backArrow').style.display = 'block';
-      document.getElementById('skipBtn').style.display = 'inline-block';
     }
+
     function goBack() {
       document.getElementById('main-question').style.display = 'block';
       document.getElementById('emojis').style.display = 'flex';
       document.getElementById('detailsForm').style.display = 'none';
       document.getElementById('subquestion').style.display = 'none';
       document.getElementById('backArrow').style.display = 'none';
-      document.getElementById('skipBtn').style.display = 'none';
     }
+
     function validateField(input, checkId, xId) {
       if (input.value.trim() === "") {
         document.getElementById(checkId).style.display = "none";
@@ -230,56 +258,8 @@
         document.getElementById(xId).style.display = "none";
       }
     }
-    function submitForm(e) {
-      e.preventDefault();
-      const btn = document.getElementById('submitBtn');
-      const loader = document.getElementById('loader');
-      const name = document.getElementById('name');
-      const contact = document.getElementById('contact');
-      if (name.value.trim() === "") {
-        validateField(name, 'check-name', 'x-name');
-        return;
-      }
-      if (contact.value.trim() === "") {
-        validateField(contact, 'check-contact', 'x-contact');
-        return;
-      }
-      btn.disabled = true;
-      loader.style.display = 'block';
-      const comments = document.getElementById('comments').value;
-      const office = new URLSearchParams(window.location.search).get('office') || 'unknown';
-      const data = {
-        data: {
-          Emoji: selectedEmoji,
-          Name: name.value,
-          Contact: contact.value,
-          Comments: comments,
-          Office: office
-        }
-      };
-      fetch('https://sheetdb.io/api/v1/tycgcxuuprkv7', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(data)
-      })
-      .then(() => {
-        document.getElementById('detailsForm').reset();
-        document.getElementById('detailsForm').style.display = 'none';
-        document.getElementById('subquestion').style.display = 'none';
-        document.getElementById('thankyou').style.display = 'block';
-        btn.disabled = false;
-        loader.style.display = 'none';
-        document.getElementById('backArrow').style.display = 'none';
-        document.getElementById('skipBtn').style.display = 'none';
-        setTimeout(() => location.reload(), 3000);
-      })
-      .catch(() => {
-        alert("Something went wrong. Please try again.");
-        btn.disabled = false;
-        loader.style.display = 'none';
-      });
-    }
-    function skipAndSubmit() {
+
+    function skipSubmit() {
       const office = new URLSearchParams(window.location.search).get('office') || 'unknown';
       const data = {
         data: {
@@ -290,20 +270,95 @@
           Office: office
         }
       };
+
       fetch('https://sheetdb.io/api/v1/tycgcxuuprkv7', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(data)
       })
+      .then(response => {
+        if (!response.ok) throw new Error('Network error');
+        return response.json();
+      })
       .then(() => {
         document.getElementById('detailsForm').style.display = 'none';
         document.getElementById('subquestion').style.display = 'none';
         document.getElementById('thankyou').style.display = 'block';
-        document.getElementById('skipBtn').style.display = 'none';
         document.getElementById('backArrow').style.display = 'none';
         setTimeout(() => location.reload(), 3000);
+      })
+      .catch(() => {
+        alert("Something went wrong. Please try again.");
+      });
+    }
+
+    function submitForm(e) {
+      e.preventDefault();
+      const btn = document.getElementById('submitBtn');
+      const loader = document.getElementById('loader');
+      const name = document.getElementById('name');
+      const contact = document.getElementById('contact');
+
+      if (name.value.trim() === "") {
+        validateField(name, 'check-name', 'x-name');
+        return;
+      }
+      if (contact.value.trim() === "") {
+        validateField(contact, 'check-contact', 'x-contact');
+        return;
+      }
+
+      btn.disabled = true;
+      loader.style.display = 'block';
+
+      const comments = document.getElementById('comments').value;
+      const office = new URLSearchParams(window.location.search).get('office') || 'unknown';
+
+      const data = {
+        data: {
+          Emoji: selectedEmoji,
+          Name: name.value,
+          Contact: contact.value,
+          Comments: comments,
+          Office: office
+        }
+      };
+
+      fetch('https://sheetdb.io/api/v1/tycgcxuuprkv7', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(data)
+      })
+      .then(response => {
+        if (!response.ok) throw new Error('Network error');
+        return response.json();
+      })
+      .then(() => {
+        document.getElementById('check-name').classList.add('show-check');
+        document.getElementById('check-contact').classList.add('show-check');
+        document.getElementById('check-comments').classList.add('show-check');
+        setTimeout(() => {
+          document.getElementById('detailsForm').reset();
+          document.getElementById('detailsForm').style.display = 'none';
+          document.getElementById('subquestion').style.display = 'none';
+          document.getElementById('thankyou').style.display = 'block';
+          btn.disabled = false;
+          loader.style.display = 'none';
+          document.getElementById('check-name').classList.remove('show-check');
+          document.getElementById('check-contact').classList.remove('show-check');
+          document.getElementById('check-comments').classList.remove('show-check');
+          document.getElementById('backArrow').style.display = 'none';
+          setTimeout(() => location.reload(), 3000);
+        }, 1500);
+      })
+      .catch(() => {
+        alert("Something went wrong. Please try again.");
+        btn.disabled = false;
+        loader.style.display = 'none';
       });
     }
   </script>
+</body>
+</html>
 </body>
 </html>
