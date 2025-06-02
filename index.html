@@ -645,12 +645,13 @@ Employee: ${employee}
 Rating: ${selectedEmoji} ${rating}
 Time: ${new Date().toLocaleString('en-AE', {timeZone: 'Asia/Dubai'})}
 Customer: ${name || 'Anonymous'}
+Contact: ${document.getElementById('contact').value.trim() || 'Not provided'}
 Comments: ${comments || 'No comments provided'}
 
 ${isUrgent ? '⚠️ IMMEDIATE FOLLOW-UP REQUIRED!' : '✅ For your information.'}
 
 ---
-Dorchester Customer Feedback System`,
+Dorchester Customer Satisfaction System`,
           name: name || 'Customer Feedback System',
           email: 'noreply@dorchester.com'
         };
