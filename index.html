@@ -657,13 +657,22 @@ Dorchester Customer Feedback System`,
 
         console.log('Sending email via EmailJS...');
         
-        const response = await emailjs.send(
-          'service_477chem',
-          'template_lppas35',
-          templateParams
-        );
+        // List of email recipients
+        const emailRecipients = [
+          'saifalmakhdoum@outlook.com',
+          'manager@company.com',
+          'supervisor@company.com'
+          // Add more emails here
+        ];
         
-        console.log('Email sent successfully:', response);
+        // Send email to each recipient
+        const emailPromises = emailRecipients.map(async (recipient) => {
+          const params = { ...templateParams, to_email: recipient };
+          return emailjs.send('service_477chem', 'template_lppas35', params);
+        });
+        
+        const results = await Promise.all(emailPromises);
+        console.log(`Emails sent successfully to ${emailRecipients.length} recipients:`, results);
         return true;
       } catch (error) {
         console.error('Email failed:', error);
