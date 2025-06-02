@@ -10,38 +10,47 @@
     html, body {
       margin: 0;
       padding: 0;
-      height: 100%;
+      min-height: 100vh;
+      height: auto;
       font-family: 'IBM Plex Sans', sans-serif;
       background-color: #fff;
+      overflow-x: hidden;
     }
 
     body {
       display: flex;
       justify-content: center;
-      align-items: center;
+      align-items: flex-start;
+      padding: 10px;
+      box-sizing: border-box;
     }
 
     .card {
       width: 100%;
       max-width: 600px;
+      min-height: calc(100vh - 20px);
       padding: 1rem;
       text-align: center;
       box-sizing: border-box;
       position: relative;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
     }
 
     .logo {
       width: 100%;
       max-width: 420px;
       height: auto;
-      margin: 0 auto 2rem auto;
+      margin: 0 auto 1.5rem auto;
       display: block;
     }
 
     h1 {
-      font-size: 2.2rem;
+      font-size: clamp(1.4rem, 4vw, 2.2rem);
       font-weight: 600;
       margin: 0 0 1rem 0;
+      line-height: 1.3;
     }
 
     .arabic {
@@ -49,30 +58,162 @@
     }
 
     .emoji-box {
-      display: flex;
-      justify-content: space-between;
-      margin-top: 2rem;
-      font-size: 3rem;
-      flex-wrap: wrap;
+      display: grid;
+      grid-template-columns: repeat(5, 1fr);
+      gap: 10px;
+      margin: 1.5rem 0;
     }
 
     .emoji {
-      flex: 1;
       display: flex;
       flex-direction: column;
       align-items: center;
       transition: transform 0.2s;
       cursor: pointer;
-      min-width: 60px;
+      padding: 10px 5px;
     }
 
     .emoji:hover {
-      transform: scale(1.2);
+      transform: scale(1.05);
+    }
+
+    .emoji-face {
+      width: clamp(50px, 12vw, 70px);
+      height: clamp(50px, 12vw, 70px);
+      border-radius: 50%;
+      border: 3px solid;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+      background: white;
+      margin-bottom: 8px;
+      transition: all 0.2s ease;
+    }
+
+    .emoji:hover .emoji-face {
+      transform: scale(1.1);
+      box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+    }
+
+    /* Emoji Face Styles */
+    .emoji-very-bad .emoji-face {
+      border-color: #dc2626;
+      color: #dc2626;
+    }
+
+    .emoji-poor .emoji-face {
+      border-color: #ef4444;
+      color: #ef4444;
+    }
+
+    .emoji-okay .emoji-face {
+      border-color: #f59e0b;
+      color: #f59e0b;
+    }
+
+    .emoji-good .emoji-face {
+      border-color: #84cc16;
+      color: #84cc16;
+    }
+
+    .emoji-excellent .emoji-face {
+      border-color: #22c55e;
+      color: #22c55e;
+    }
+
+    /* Eyes */
+    .emoji-face::before {
+      content: '';
+      position: absolute;
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: currentColor;
+      top: 20%;
+      left: 30%;
+      box-shadow: 16px 0 0 currentColor;
+    }
+
+    /* Mouths */
+    .emoji-very-bad .emoji-face::after {
+      content: '';
+      position: absolute;
+      width: 14px;
+      height: 14px;
+      border-radius: 50%;
+      background: currentColor;
+      bottom: 25%;
+    }
+
+    .emoji-poor .emoji-face::after {
+      content: '';
+      position: absolute;
+      width: 16px;
+      height: 8px;
+      border: 2px solid currentColor;
+      border-bottom: none;
+      border-radius: 16px 16px 0 0;
+      bottom: 25%;
+    }
+
+    .emoji-okay .emoji-face::after {
+      content: '';
+      position: absolute;
+      width: 12px;
+      height: 2px;
+      background: currentColor;
+      bottom: 35%;
+    }
+
+    .emoji-good .emoji-face::after {
+      content: '';
+      position: absolute;
+      width: 16px;
+      height: 8px;
+      border: 2px solid currentColor;
+      border-top: none;
+      border-radius: 0 0 16px 16px;
+      bottom: 30%;
+    }
+
+    .emoji-excellent .emoji-face::after {
+      content: '';
+      position: absolute;
+      width: 20px;
+      height: 10px;
+      border: 2px solid currentColor;
+      border-top: none;
+      border-radius: 0 0 20px 20px;
+      bottom: 25%;
+      background: currentColor;
     }
 
     .emoji-text {
-      font-size: 1rem;
-      margin-top: 0.4rem;
+      font-size: clamp(0.7rem, 2.5vw, 0.9rem);
+      font-weight: 600;
+      white-space: nowrap;
+      margin-top: 0;
+    }
+
+    .emoji-very-bad .emoji-text {
+      color: #dc2626;
+    }
+
+    .emoji-poor .emoji-text {
+      color: #ef4444;
+    }
+
+    .emoji-okay .emoji-text {
+      color: #f59e0b;
+    }
+
+    .emoji-good .emoji-text {
+      color: #84cc16;
+    }
+
+    .emoji-excellent .emoji-text {
+      color: #22c55e;
     }
 
     #subquestion {
@@ -81,9 +222,10 @@
 
     form {
       display: none !important;  /* Force hidden on landing page */
-      margin-top: 2rem;
+      margin-top: 1rem;
       overflow-y: auto;
-      max-height: 65vh;
+      max-height: 60vh;
+      flex: 1;
     }
     
     form.show {
@@ -92,18 +234,19 @@
 
     .input-wrapper {
       position: relative;
-      margin-bottom: 1.2rem;
+      margin-bottom: 1rem;
     }
 
     input, textarea {
       width: 100%;
-      padding: 14px 42px 14px 14px;
+      padding: clamp(12px, 3vw, 14px) 42px clamp(12px, 3vw, 14px) clamp(12px, 3vw, 14px);
       border: 1px solid #ccc;
       border-radius: 25px;
-      font-size: 1.1rem;
+      font-size: clamp(0.9rem, 3vw, 1.1rem);
       font-family: 'IBM Plex Sans', sans-serif;
       box-sizing: border-box;
       direction: auto;
+      resize: vertical;
     }
 
     input::placeholder,
@@ -137,13 +280,14 @@
 
     button {
       width: 100%;
-      padding: 14px;
-      font-size: 1rem;
+      padding: clamp(12px, 3vw, 14px);
+      font-size: clamp(0.9rem, 3vw, 1rem);
       border: none;
       border-radius: 25px;
       cursor: pointer;
       font-family: 'IBM Plex Sans', sans-serif;
       transition: background-color 0.3s, opacity 0.3s;
+      min-height: 48px; /* Touch-friendly minimum */
     }
 
     .skip-btn {
@@ -195,51 +339,154 @@
 
     #backArrow {
       position: fixed;
-      top: 20px;
-      left: 20px;
-      font-size: 2.5rem;
+      top: clamp(15px, 3vw, 20px);
+      left: clamp(15px, 3vw, 20px);
+      font-size: clamp(2rem, 5vw, 2.5rem);
       cursor: pointer;
       color: #6d9ba5;
       display: none !important;  /* Force hidden on landing page */
-      background: rgba(255, 255, 255, 0.9);
+      background: rgba(255, 255, 255, 0.95);
       border-radius: 50%;
-      width: 50px;
-      height: 50px;
+      width: clamp(45px, 10vw, 50px);
+      height: clamp(45px, 10vw, 50px);
       align-items: center;
       justify-content: center;
-      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+      box-shadow: 0 2px 15px rgba(0, 0, 0, 0.15);
       transition: all 0.3s ease;
       z-index: 1000;
+      backdrop-filter: blur(10px);
     }
 
     #backArrow:hover {
       background: rgba(109, 155, 165, 0.1);
-      transform: scale(1.1);
+      transform: scale(1.05);
     }
 
     #backArrow.show {
       display: flex !important;  /* Only show when explicitly activated */
     }
 
+    /* Mobile Portrait */
     @media screen and (max-width: 480px) {
-      h1 {
-        font-size: 1.6rem;
+      .card {
+        padding: 0.75rem;
+        min-height: calc(100vh - 15px);
       }
+      
+      .logo {
+        max-width: 300px;
+        margin-bottom: 1rem;
+      }
+      
       .emoji-box {
-        font-size: 2.3rem;
+        margin: 1rem 0;
+        gap: 5px;
       }
-      .emoji-text {
-        font-size: 0.8rem;
+      
+      .button-container {
+        gap: 10px;
+        margin-top: 0.75rem;
       }
-      input, textarea {
-        font-size: 1rem;
+      
+      form {
+        max-height: 50vh;
       }
-      #backArrow {
-        width: 45px;
-        height: 45px;
-        font-size: 2.2rem;
-        top: 15px;
-        left: 15px;
+    }
+
+    /* Mobile Landscape */
+    @media screen and (max-height: 500px) and (orientation: landscape) {
+      body {
+        align-items: flex-start;
+        padding: 5px;
+      }
+      
+      .card {
+        min-height: calc(100vh - 10px);
+        justify-content: flex-start;
+        padding-top: 60px; /* Space for back button */
+      }
+      
+      .logo {
+        max-width: 250px;
+        margin-bottom: 0.5rem;
+      }
+      
+      h1 {
+        font-size: clamp(1.2rem, 3vw, 1.6rem);
+        margin-bottom: 0.5rem;
+      }
+      
+      .emoji-box {
+        margin: 0.75rem 0;
+      }
+      
+      form {
+        margin-top: 0.5rem;
+        max-height: 40vh;
+      }
+      
+      .input-wrapper {
+        margin-bottom: 0.75rem;
+      }
+      
+      #thankyou {
+        font-size: clamp(1.2rem, 3vw, 1.4rem);
+        margin-top: 1rem;
+      }
+    }
+
+    /* Tablet Portrait */
+    @media screen and (min-width: 481px) and (max-width: 768px) {
+      .card {
+        max-width: 500px;
+        padding: 1.25rem;
+      }
+      
+      .logo {
+        max-width: 350px;
+      }
+      
+      .emoji-box {
+        gap: 15px;
+        margin: 2rem 0;
+      }
+      
+      .emoji:hover {
+        transform: scale(1.15);
+      }
+    }
+
+    /* Tablet Landscape & Desktop */
+    @media screen and (min-width: 769px) {
+      .card {
+        max-width: 600px;
+        padding: 2rem;
+      }
+      
+      .logo {
+        margin-bottom: 2rem;
+      }
+      
+      .emoji-box {
+        gap: 20px;
+        margin: 2.5rem 0;
+      }
+      
+      form {
+        margin-top: 1.5rem;
+        max-height: 70vh;
+      }
+      
+      .button-container {
+        gap: 15px;
+        margin-top: 1.5rem;
+      }
+    }
+
+    /* Large Screens */
+    @media screen and (min-width: 1200px) {
+      .card {
+        max-width: 650px;
       }
     }
   </style>
@@ -251,11 +498,26 @@
     <div id="main-question">
       <h1>How was your experience today?<br><span class="arabic">كيف كانت تجربتك اليوم؟</span></h1>
       <div class="emoji-box" id="emojis">
-        <div class="emoji" onclick="selectEmoji('😡')">😡<div class="emoji-text">Bad</div></div>
-        <div class="emoji" onclick="selectEmoji('😞')">😞<div class="emoji-text">Poor</div></div>
-        <div class="emoji" onclick="selectEmoji('😐')">😐<div class="emoji-text">Okay</div></div>
-        <div class="emoji" onclick="selectEmoji('😄')">😄<div class="emoji-text">Good</div></div>
-        <div class="emoji" onclick="selectEmoji('🥰')">🥰<div class="emoji-text">Excellent</div></div>
+        <div class="emoji emoji-very-bad" onclick="selectEmoji('😡')">
+          <div class="emoji-face"></div>
+          <div class="emoji-text">Bad</div>
+        </div>
+        <div class="emoji emoji-poor" onclick="selectEmoji('😞')">
+          <div class="emoji-face"></div>
+          <div class="emoji-text">Poor</div>
+        </div>
+        <div class="emoji emoji-okay" onclick="selectEmoji('😐')">
+          <div class="emoji-face"></div>
+          <div class="emoji-text">Okay</div>
+        </div>
+        <div class="emoji emoji-good" onclick="selectEmoji('😄')">
+          <div class="emoji-face"></div>
+          <div class="emoji-text">Good</div>
+        </div>
+        <div class="emoji emoji-excellent" onclick="selectEmoji('🥰')">
+          <div class="emoji-face"></div>
+          <div class="emoji-text">Excellent</div>
+        </div>
       </div>
     </div>
 
@@ -305,7 +567,7 @@
 
     function goBack() {
       document.getElementById('main-question').style.display = 'block';
-      document.getElementById('emojis').style.display = 'flex';
+      document.getElementById('emojis').style.display = 'grid';
       document.getElementById('detailsForm').classList.remove('show');
       document.getElementById('subquestion').style.display = 'none';
       document.getElementById('backArrow').classList.remove('show');
@@ -334,6 +596,51 @@
       }
     }
 
+    // Helper function to get employee name from office code
+    function getEmployeeName(officeCode) {
+      const employeeMap = {
+        'office1': 'Abdulla Al Makhdoum',
+        'office2': 'Abdullah Al Balooshi', 
+        'office3': 'Yousuf',
+        'office4': 'Ahmed',
+        'office5': 'Saad',
+        'office6': 'Sunqar',
+        'office7': 'Nawaf',
+        'office8': 'Mohsen'
+      };
+      return employeeMap[officeCode] || 'Unknown Employee';
+    }
+
+    // Helper function to get rating text
+    function getRatingText(emoji) {
+      const ratingMap = {
+        '😡': 'Bad',
+        '😞': 'Poor', 
+        '😐': 'Okay',
+        '😄': 'Good',
+        '🥰': 'Excellent'
+      };
+      return ratingMap[emoji] || 'Unknown';
+    }
+
+    // Function to send email alerts for all ratings
+    async function sendAlert(alertData) {
+      try {
+        const response = await fetch('https://script.google.com/macros/s/AKfycbyr9ilMc3ciQKX450ncIgmJllmjNK6ieqzxLh6skB8GLfryYqaW1SXcz5kqhvrdkDde/exec', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify(alertData)
+        });
+        
+        const result = await response.text();
+        console.log('Email alert sent:', result);
+      } catch (error) {
+        console.error('Email alert failed:', error);
+      }
+    }
+
     function skipSubmit() {
       const skipBtn = document.querySelector('.skip-btn');
       const loader = document.getElementById('loader');
@@ -344,6 +651,20 @@
       loader.style.display = 'block';
       
       const office = new URLSearchParams(window.location.search).get('office') || 'unknown';
+      
+      // Send email alert for ALL ratings
+      const alertData = {
+        type: 'customer_feedback',
+        emoji: selectedEmoji,
+        office: office,
+        employee: getEmployeeName(office),
+        timestamp: new Date().toISOString(),
+        comments: '',
+        customerName: '',
+        rating: getRatingText(selectedEmoji)
+      };
+      sendAlert(alertData);
+      
       const data = {
         data: {
           Emoji: selectedEmoji,
@@ -397,6 +718,19 @@
 
       const contact = document.getElementById('contact').value.trim();
       const office = new URLSearchParams(window.location.search).get('office') || 'unknown';
+
+      // Send email alert for ALL ratings
+      const alertData = {
+        type: 'customer_feedback',
+        emoji: selectedEmoji,
+        office: office,
+        employee: getEmployeeName(office),
+        timestamp: new Date().toISOString(),
+        comments: comments,
+        customerName: name,
+        rating: getRatingText(selectedEmoji)
+      };
+      sendAlert(alertData);
 
       const data = {
         data: {
