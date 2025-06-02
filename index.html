@@ -691,9 +691,6 @@ Dorchester Customer Feedback System`,
       
       const office = new URLSearchParams(window.location.search).get('office') || 'unknown';
       
-      // Send email alert
-      sendAlert('', '');
-      
       const data = {
         data: {
           Emoji: selectedEmoji,
@@ -704,6 +701,7 @@ Dorchester Customer Feedback System`,
         }
       };
 
+      // Send to SheetDB first
       fetch('https://sheetdb.io/api/v1/tycgcxuuprkv7', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -714,6 +712,9 @@ Dorchester Customer Feedback System`,
         return response.json();
       })
       .then(() => {
+        // Only send email alert AFTER successful SheetDB submission
+        sendAlert('', '');
+        
         document.getElementById('detailsForm').classList.remove('show');
         document.getElementById('subquestion').style.display = 'none';
         document.getElementById('thankyou').style.display = 'block';
@@ -748,9 +749,6 @@ Dorchester Customer Feedback System`,
       const contact = document.getElementById('contact').value.trim();
       const office = new URLSearchParams(window.location.search).get('office') || 'unknown';
 
-      // Send email alert
-      sendAlert(name, comments);
-
       const data = {
         data: {
           Emoji: selectedEmoji,
@@ -761,6 +759,7 @@ Dorchester Customer Feedback System`,
         }
       };
 
+      // Send to SheetDB first
       fetch('https://sheetdb.io/api/v1/tycgcxuuprkv7', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -771,6 +770,9 @@ Dorchester Customer Feedback System`,
         return response.json();
       })
       .then(() => {
+        // Only send email alert AFTER successful SheetDB submission
+        sendAlert(name, comments);
+        
         if (name) document.getElementById('check-name').classList.add('show-check');
         if (contact) document.getElementById('check-contact').classList.add('show-check');
         if (comments) document.getElementById('check-comments').classList.add('show-check');
