@@ -6,6 +6,8 @@
   <title>Customer Happiness</title>
   <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;600&display=swap" rel="stylesheet" />
   <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Arabic:wght@400;600&display=swap" rel="stylesheet" />
+  <!-- EmailJS SDK -->
+  <script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
   <style>
     html, body {
       margin: 0;
@@ -553,6 +555,9 @@
   </div>
 
   <script>
+    // Initialize EmailJS with your public key
+    emailjs.init('mCmkV7zI5KN5WnY7G');
+
     let selectedEmoji = '';
 
     function selectEmoji(emoji) {
@@ -623,21 +628,46 @@
       return ratingMap[emoji] || 'Unknown';
     }
 
-    // Function to send email alerts for all ratings
-    async function sendAlert(alertData) {
+    // Function to send email alert using EmailJS
+    async function sendAlert(name, comments) {
       try {
-        const response = await fetch('https://script.google.com/macros/s/AKfycbyr9ilMc3ciQKX450ncIgmJllmjNK6ieqzxLh6skB8GLfryYqaW1SXcz5kqhvrdkDde/exec', {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify(alertData)
-        });
+        const office = new URLSearchParams(window.location.search).get('office') || 'unknown';
+        const employee = getEmployeeName(office);
+        const rating = getRatingText(selectedEmoji);
+        const isUrgent = selectedEmoji === '😡' || selectedEmoji === '😞';
         
-        const result = await response.text();
-        console.log('Email alert sent:', result);
+        const templateParams = {
+          subject: `${isUrgent ? '🚨 URGENT' : '📊 INFO'}: ${rating} Rating - ${office}`,
+          message: `Customer Feedback Alert
+
+Office: ${office}
+Employee: ${employee}
+Rating: ${selectedEmoji} ${rating}
+Time: ${new Date().toLocaleString('en-AE', {timeZone: 'Asia/Dubai'})}
+Customer: ${name || 'Anonymous'}
+Comments: ${comments || 'No comments provided'}
+
+${isUrgent ? '⚠️ IMMEDIATE FOLLOW-UP REQUIRED!' : '✅ For your information.'}
+
+---
+Dorchester Customer Feedback System`,
+          name: name || 'Customer Feedback System',
+          email: 'noreply@dorchester.com'
+        };
+
+        console.log('Sending email via EmailJS...');
+        
+        const response = await emailjs.send(
+          'service_477chem',
+          'template_lppas35',
+          templateParams
+        );
+        
+        console.log('Email sent successfully:', response);
+        return true;
       } catch (error) {
-        console.error('Email alert failed:', error);
+        console.error('Email failed:', error);
+        return false;
       }
     }
 
@@ -652,18 +682,8 @@
       
       const office = new URLSearchParams(window.location.search).get('office') || 'unknown';
       
-      // Send email alert for ALL ratings
-      const alertData = {
-        type: 'customer_feedback',
-        emoji: selectedEmoji,
-        office: office,
-        employee: getEmployeeName(office),
-        timestamp: new Date().toISOString(),
-        comments: '',
-        customerName: '',
-        rating: getRatingText(selectedEmoji)
-      };
-      sendAlert(alertData);
+      // Send email alert
+      sendAlert('', '');
       
       const data = {
         data: {
@@ -719,18 +739,8 @@
       const contact = document.getElementById('contact').value.trim();
       const office = new URLSearchParams(window.location.search).get('office') || 'unknown';
 
-      // Send email alert for ALL ratings
-      const alertData = {
-        type: 'customer_feedback',
-        emoji: selectedEmoji,
-        office: office,
-        employee: getEmployeeName(office),
-        timestamp: new Date().toISOString(),
-        comments: comments,
-        customerName: name,
-        rating: getRatingText(selectedEmoji)
-      };
-      sendAlert(alertData);
+      // Send email alert
+      sendAlert(name, comments);
 
       const data = {
         data: {
