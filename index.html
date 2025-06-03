@@ -22,15 +22,17 @@
     body {
       display: flex;
       justify-content: center;
-      align-items: flex-start;
-      padding: 10px;
+      align-items: center;
+      padding: 0;
       box-sizing: border-box;
+      overflow: hidden;
     }
 
     .card {
       width: 100%;
       max-width: 600px;
-      min-height: calc(100vh - 20px);
+      min-height: 100vh;
+      max-height: 100vh;
       padding: 1rem;
       text-align: center;
       box-sizing: border-box;
@@ -38,20 +40,21 @@
       display: flex;
       flex-direction: column;
       justify-content: center;
+      overflow: hidden;
     }
 
     .logo {
       width: 100%;
-      max-width: 420px;
+      max-width: clamp(280px, 60vw, 420px);
       height: auto;
-      margin: 0 auto 1.5rem auto;
+      margin: 0 auto clamp(0.8rem, 2vh, 1.5rem) auto;
       display: block;
     }
 
     h1 {
-      font-size: clamp(1.4rem, 4vw, 2.2rem);
+      font-size: clamp(1.2rem, 3.5vw, 2.2rem);
       font-weight: 600;
-      margin: 0 0 1rem 0;
+      margin: 0 0 clamp(0.5rem, 1vh, 1rem) 0;
       line-height: 1.3;
     }
 
@@ -62,8 +65,8 @@
     .emoji-box {
       display: grid;
       grid-template-columns: repeat(5, 1fr);
-      gap: 10px;
-      margin: 1.5rem 0;
+      gap: clamp(8px, 2vw, 15px);
+      margin: clamp(0.8rem, 2vh, 1.5rem) 0;
     }
 
     .emoji {
@@ -72,7 +75,7 @@
       align-items: center;
       transition: transform 0.2s;
       cursor: pointer;
-      padding: 10px 5px;
+      padding: clamp(5px, 1.5vw, 10px);
     }
 
     .emoji:hover {
@@ -224,19 +227,22 @@
 
     form {
       display: none !important;  /* Force hidden on landing page */
-      margin-top: 1rem;
+      margin-top: clamp(0.5rem, 1vh, 1rem);
       flex: 1;
       max-height: none;
       overflow: visible;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
     }
     
     form.show {
-      display: block !important;  /* Only show when explicitly activated */
+      display: flex !important;  /* Only show when explicitly activated */
     }
 
     .input-wrapper {
       position: relative;
-      margin-bottom: 1rem;
+      margin-bottom: clamp(0.8rem, 1.5vh, 1rem);
     }
 
     input, textarea {
@@ -276,20 +282,20 @@
     .button-container {
       display: flex;
       flex-direction: column;
-      gap: 12px;
-      margin-top: 1rem;
+      gap: clamp(8px, 1.5vh, 12px);
+      margin-top: clamp(0.5rem, 1vh, 1rem);
     }
 
     button {
       width: 100%;
-      padding: clamp(12px, 3vw, 14px);
-      font-size: clamp(0.9rem, 3vw, 1rem);
+      padding: clamp(10px, 2.5vw, 14px);
+      font-size: clamp(0.85rem, 2.5vw, 1rem);
       border: none;
       border-radius: 25px;
       cursor: pointer;
       font-family: 'IBM Plex Sans', sans-serif;
       transition: background-color 0.3s, opacity 0.3s;
-      min-height: 48px; /* Touch-friendly minimum */
+      min-height: clamp(40px, 6vh, 48px);
     }
 
     .skip-btn {
@@ -692,12 +698,12 @@
 
     <form id="detailsForm" onsubmit="submitForm(event)">
       <div class="input-wrapper">
-        <input type="text" id="name" placeholder="Your Name / اسمك" oninput="validateField(this, 'check-name', 'x-name'); checkSubmitButton()">
+        <input type="text" id="name" placeholder="Your Name / اسمك" oninput="validateField(this, 'check-name', 'x-name'); checkSubmitButton()" onblur="validateField(this, 'check-name', 'x-name')">
         <span class="checkmark" id="check-name">✔️</span>
         <span class="xmark" id="x-name">❌</span>
       </div>
       <div class="input-wrapper">
-        <input type="text" id="contact" placeholder="Contact Number / رقم التواصل" oninput="validateField(this, 'check-contact', 'x-contact')">
+        <input type="text" id="contact" placeholder="Contact Number / رقم التواصل" oninput="validateField(this, 'check-contact', 'x-contact')" onblur="validateField(this, 'check-contact', 'x-contact')">
         <span class="checkmark" id="check-contact">✔️</span>
         <span class="xmark" id="x-contact">❌</span>
       </div>
@@ -722,16 +728,15 @@
   <div class="inactivity-warning" id="inactivityWarning">
     <div class="warning-modal">
       <h2>⏰ Still there?</h2>
-      <p>You've been inactive for a while.<br>
-         <span class="arabic">لم تقم بأي نشاط لفترة</span></p>
-      <p>Page will restart in:</p>
+      <p>Auto-submitting your rating in:<br>
+         <span class="arabic">سيتم إرسال تقييمك تلقائياً خلال</span></p>
       <div class="countdown-display" id="countdownDisplay">10</div>
       <div class="warning-buttons">
         <button type="button" class="warning-btn continue-btn" onclick="continueSession(); return false;">
-          Continue / متابعة
+          Wait, let me finish<br><span class="arabic">انتظر، دعني أكمل</span>
         </button>
-        <button type="button" class="warning-btn restart-btn" onclick="restartSession(); return false;">
-          Go Back / العودة
+        <button type="button" class="warning-btn restart-btn" onclick="submitNow(); return false;">
+          Submit now<br><span class="arabic">إرسال الآن</span>
         </button>
       </div>
     </div>
@@ -752,6 +757,7 @@
     let isUserTyping = false;
     let isSubmitting = false;
     let lastTypingTime = 0;
+    let isAutoSubmitting = false;
 
     // Activity events to monitor
     const activityEvents = [
@@ -815,12 +821,12 @@
       if (typingEvents.includes(event.type)) {
         isUserTyping = true;
         
-        // Clear typing flag after 2 seconds of no typing
+        // Clear typing flag after 3 seconds of no typing
         setTimeout(() => {
-          if (Date.now() - lastTypingTime >= 2000) {
+          if (Date.now() - lastTypingTime >= 3000) {
             isUserTyping = false;
           }
-        }, 2000);
+        }, 3000);
       }
     }
 
@@ -847,12 +853,18 @@
     }
 
     function validateField(input, checkId, xId) {
-      if (input.value.trim() === "") {
-        document.getElementById(checkId).style.display = "none";
-        document.getElementById(xId).style.display = "inline";
+      const value = input.value.trim();
+      const checkElement = document.getElementById(checkId);
+      const xElement = document.getElementById(xId);
+      
+      if (value === "") {
+        // Field is empty - hide both indicators
+        checkElement.style.display = "none";
+        xElement.style.display = "none";
       } else {
-        document.getElementById(checkId).style.display = "inline";
-        document.getElementById(xId).style.display = "none";
+        // Field has content - show checkmark, hide X
+        checkElement.style.display = "inline";
+        xElement.style.display = "none";
       }
     }
 
@@ -915,15 +927,17 @@
     }
 
     // Function to send email alert using EmailJS
-    async function sendAlert(name, comments) {
+    async function sendAlert(name, comments, isAutoSubmit = false) {
       try {
         const office = new URLSearchParams(window.location.search).get('office') || 'unknown';
         const employee = getEmployeeName(office);
         const rating = getRatingText(selectedEmoji);
         const isUrgent = selectedEmoji === '😡' || selectedEmoji === '😞';
         
+        const submissionType = isAutoSubmit ? 'Auto-submitted due to inactivity' : 'Manual submission';
+        
         const templateParams = {
-          subject: `${isUrgent ? '🚨 URGENT' : '📊 INFO'}: ${rating} Rating - ${office}`,
+          subject: `${isUrgent ? '🚨 URGENT' : '📊 INFO'}${isAutoSubmit ? ' (AUTO)' : ''}: ${rating} Rating - ${office}`,
           message: `Customer Feedback Alert
 
 Office: ${office}
@@ -933,6 +947,7 @@ Time: ${new Date().toLocaleString('en-AE', {timeZone: 'Asia/Dubai'})}
 Customer: ${name || 'Anonymous'}
 Contact: ${document.getElementById('contact').value.trim() || 'Not provided'}
 Comments: ${comments || 'No comments provided'}
+Submission Type: ${submissionType}
 
 ${isUrgent ? '⚠️ IMMEDIATE FOLLOW-UP REQUIRED!' : '✅ For your information.'}
 
@@ -971,8 +986,8 @@ Dorchester Customer Satisfaction System`,
       
       const office = new URLSearchParams(window.location.search).get('office') || 'unknown';
       
-      // Send email alert
-      sendAlert('', '');
+      // Send email alert (manual skip)
+      sendAlert('', '', false);
       
       const data = {
         data: {
@@ -1032,8 +1047,8 @@ Dorchester Customer Satisfaction System`,
       const contact = document.getElementById('contact').value.trim();
       const office = new URLSearchParams(window.location.search).get('office') || 'unknown';
 
-      // Send email alert
-      sendAlert(name, comments);
+      // Send email alert (manual submission)
+      sendAlert(name, comments, false);
 
       const data = {
         data: {
@@ -1041,7 +1056,8 @@ Dorchester Customer Satisfaction System`,
           Name: name,
           Contact: contact,
           Comments: comments,
-          Office: office
+          Office: office,
+          SubmissionType: 'Manual submission'
         }
       };
 
@@ -1094,8 +1110,15 @@ Dorchester Customer Satisfaction System`,
         if (!isUserTyping && !isSubmitting) {
           showInactivityWarning();
         } else {
-          // Restart timer if user was typing
-          startInactivityTracking();
+          // If user was typing, wait a bit more and check again
+          setTimeout(() => {
+            if (!isUserTyping && !isSubmitting) {
+              showInactivityWarning();
+            } else {
+              // Restart timer if still typing
+              startInactivityTracking();
+            }
+          }, 3000);
         }
       }, 15000);
     }
@@ -1150,7 +1173,7 @@ Dorchester Customer Satisfaction System`,
         countdown.textContent = countdownSeconds;
         
         if (countdownSeconds <= 0) {
-          restartSession();
+          autoSubmitFeedback();
         }
       }, 1000);
     }
@@ -1189,32 +1212,96 @@ Dorchester Customer Satisfaction System`,
       startInactivityTracking(); // Restart the timer
     }
 
-    function restartSession() {
+    function submitNow() {
       hideInactivityWarning();
+      manualSubmitForm();
+    }
+
+    function autoSubmitFeedback() {
+      hideInactivityWarning();
+      isAutoSubmitting = true;
+      
+      // Show submitting message
+      const warning = document.getElementById('inactivityWarning');
+      const modal = warning.querySelector('.warning-modal');
+      
+      modal.innerHTML = `
+        <h2>📤 Submitting your feedback...</h2>
+        <p>Thank you for your rating!<br>
+           <span class="arabic">شكراً لتقييمك!</span></p>
+        <div class="loader" style="display: block; margin: 1rem auto;"></div>
+      `;
+      
+      warning.classList.add('show');
+      
+      setTimeout(() => {
+        performSubmission(true); // true indicates auto-submission
+      }, 1500);
+    }
+
+    function manualSubmitForm() {
+      performSubmission(false); // false indicates manual submission
+    }
+
+    function performSubmission(isAutoSubmit) {
       stopInactivityTracking();
+      isSubmitting = true;
       
-      // Reset form and go back to emoji selection
-      document.getElementById('detailsForm').reset();
-      document.getElementById('detailsForm').classList.remove('show');
-      document.getElementById('subquestion').style.display = 'none';
-      document.getElementById('backArrow').classList.remove('show');
-      document.getElementById('main-question').style.display = 'block';
-      document.getElementById('emojis').style.display = 'grid';
-      
-      // Clear validation indicators
-      document.querySelectorAll('.checkmark, .xmark').forEach(el => {
-        el.style.display = 'none';
+      const name = document.getElementById('name').value.trim();
+      const contact = document.getElementById('contact').value.trim();
+      const comments = document.getElementById('comments').value.trim();
+      const office = new URLSearchParams(window.location.search).get('office') || 'unknown';
+
+      // Send email alert with auto-submit flag
+      sendAlert(name, comments, isAutoSubmit);
+
+      const data = {
+        data: {
+          Emoji: selectedEmoji,
+          Name: name,
+          Contact: contact,
+          Comments: comments,
+          Office: office,
+          SubmissionType: isAutoSubmit ? 'Auto-submitted due to inactivity' : 'Manual submission'
+        }
+      };
+
+      fetch('https://sheetdb.io/api/v1/tycgcxuuprkv7', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(data)
+      })
+      .then(response => {
+        if (!response.ok) throw new Error('Network error');
+        return response.json();
+      })
+      .then(() => {
+        // Hide warning modal if it's showing
+        const warning = document.getElementById('inactivityWarning');
+        warning.classList.remove('show');
+        
+        // Show thank you page
+        document.getElementById('detailsForm').classList.remove('show');
+        document.getElementById('subquestion').style.display = 'none';
+        document.getElementById('thankyou').style.display = 'block';
+        document.getElementById('backArrow').classList.remove('show');
+        
+        // Remove blur effect
+        const card = document.querySelector('.card');
+        card.classList.remove('blurred');
+        
+        setTimeout(() => location.reload(), 3000);
+      })
+      .catch(() => {
+        alert("Something went wrong. Please try again.");
+        isSubmitting = false;
+        isAutoSubmitting = false;
+        
+        // Reset warning modal if auto-submit failed
+        if (isAutoSubmit) {
+          restartSession();
+        }
       });
-      
-      // Reset selected emoji
-      selectedEmoji = '';
-      
-      // Reset character count
-      const charCount = document.getElementById('char-count');
-      if (charCount) {
-        charCount.textContent = '0/200';
-        charCount.classList.remove('warning', 'danger');
-      }
     }
 
     // Reset inactivity timer on any activity
