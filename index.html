@@ -49,9 +49,7 @@
     </div>
 
     <div id="subquestion">
-     <h1>Please fill in your details<br><span class="arabic">يرجى تعبئة التفاصيل</span></h1>
-     <p class="optional-note">Optional - you can skip and submit directly<br>
-    <span class="arabic">اختياري - يمكنك التخطي والإرسال مباشرة</span></p>
+      <h1>Please fill in your details<br><span class="arabic">يرجى تعبئة التفاصيل</span></h1>
     </div>
 
     <form id="detailsForm" onsubmit="submitForm(event)">
@@ -77,7 +75,8 @@
       </div>
       <div class="loader" id="loader"></div>
       <div class="button-container">
-       <button type="button" class="skip-btn" onclick="skipSubmit()">Skip and Submit</button>
+        <button type="button" class="skip-btn" onclick="skipSubmit()">Skip and Submit</button>
+        <button type="submit" class="submit-btn" id="submitBtn" disabled>Submit</button>
       </div>
     </form>
 
