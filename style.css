@@ -5,8 +5,6 @@
   --accent-blue: #3b82f6;
   --accent-orange: #f97316;
   --gradient-bg: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 50%, #cbd5e1 100%);
-  --glass-bg: rgba(255, 255, 255, 0.1);
-  --glass-border: rgba(255, 255, 255, 0.2);
   --shadow-soft: 0 8px 32px rgba(0, 0, 0, 0.1);
   --shadow-medium: 0 12px 40px rgba(0, 0, 0, 0.15);
   --shadow-large: 0 20px 60px rgba(0, 0, 0, 0.2);
@@ -197,6 +195,8 @@ h1 {
   border-radius: 15px;
   position: relative;
   overflow: hidden;
+  /* Mobile-first: Remove hover, add active state */
+  -webkit-tap-highlight-color: transparent;
 }
 
 .emoji::before {
@@ -212,146 +212,30 @@ h1 {
   border-radius: 15px;
 }
 
-.emoji:hover {
-  transform: translateY(-8px) scale(1.05);
+/* Mobile touch feedback - replaces hover */
+.emoji:active {
+  transform: translateY(-4px) scale(1.02);
   box-shadow: var(--shadow-medium);
 }
 
-.emoji:hover::before {
+.emoji:active::before {
   opacity: 1;
 }
 
-.emoji:active {
-  transform: translateY(-4px) scale(1.02);
-}
-
-.emoji-face {
+/* New emoji image styles */
+.emoji-img {
   width: clamp(40px, 10vw, 70px);
   height: clamp(40px, 10vw, 70px);
-  border-radius: 50%;
-  border: 3px solid;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  position: relative;
-  background: linear-gradient(135deg, #ffffff 0%, #f8fafc 100%);
   margin-bottom: 12px;
   transition: var(--transition);
-  box-shadow: var(--shadow-soft);
+  filter: drop-shadow(0 2px 8px rgba(0, 0, 0, 0.1));
+  user-select: none;
+  -webkit-user-drag: none;
 }
 
-.emoji:hover .emoji-face {
+.emoji:active .emoji-img {
   transform: scale(1.1);
-  box-shadow: var(--shadow-medium);
-}
-
-/* Enhanced Emoji Face Styles with gradients */
-.emoji-very-bad .emoji-face {
-  border-color: #dc2626;
-  color: #dc2626;
-  background: linear-gradient(135deg, #fef2f2 0%, #fee2e2 100%);
-}
-
-.emoji-poor .emoji-face {
-  border-color: #ef4444;
-  color: #ef4444;
-  background: linear-gradient(135deg, #fef2f2 0%, #fecaca 100%);
-}
-
-.emoji-okay .emoji-face {
-  border-color: #f59e0b;
-  color: #f59e0b;
-  background: linear-gradient(135deg, #fffbeb 0%, #fed7aa 100%);
-}
-
-.emoji-good .emoji-face {
-  border-color: #84cc16;
-  color: #84cc16;
-  background: linear-gradient(135deg, #f7fee7 0%, #dcfce7 100%);
-}
-
-.emoji-excellent .emoji-face {
-  border-color: #22c55e;
-  color: #22c55e;
-  background: linear-gradient(135deg, #f0fdf4 0%, #bbf7d0 100%);
-}
-
-/* Eyes with improved styling */
-.emoji-face::before {
-  content: '';
-  position: absolute;
-  width: 8px;
-  height: 8px;
-  border-radius: 50%;
-  background: currentColor;
-  top: 20%;
-  left: 28%;
-  box-shadow: 20px 0 0 currentColor;
-  animation: blink 4s ease-in-out infinite;
-}
-
-@keyframes blink {
-  0%, 95%, 100% {
-    transform: scaleY(1);
-  }
-  97.5% {
-    transform: scaleY(0.1);
-  }
-}
-
-/* Enhanced mouth expressions */
-.emoji-very-bad .emoji-face::after {
-  content: '';
-  position: absolute;
-  width: 16px;
-  height: 16px;
-  border-radius: 50%;
-  background: currentColor;
-  bottom: 25%;
-}
-
-.emoji-poor .emoji-face::after {
-  content: '';
-  position: absolute;
-  width: 18px;
-  height: 9px;
-  border: 3px solid currentColor;
-  border-bottom: none;
-  border-radius: 18px 18px 0 0;
-  bottom: 25%;
-}
-
-.emoji-okay .emoji-face::after {
-  content: '';
-  position: absolute;
-  width: 14px;
-  height: 3px;
-  background: currentColor;
-  bottom: 35%;
-  border-radius: 2px;
-}
-
-.emoji-good .emoji-face::after {
-  content: '';
-  position: absolute;
-  width: 18px;
-  height: 9px;
-  border: 3px solid currentColor;
-  border-top: none;
-  border-radius: 0 0 18px 18px;
-  bottom: 30%;
-}
-
-.emoji-excellent .emoji-face::after {
-  content: '';
-  position: absolute;
-  width: 22px;
-  height: 11px;
-  border: 3px solid currentColor;
-  border-top: none;
-  border-radius: 0 0 22px 22px;
-  bottom: 25%;
-  background: currentColor;
+  filter: drop-shadow(0 4px 12px rgba(0, 0, 0, 0.2));
 }
 
 .emoji-text {
@@ -360,12 +244,14 @@ h1 {
   white-space: nowrap;
   margin-top: 0;
   transition: var(--transition);
+  user-select: none;
 }
 
-.emoji:hover .emoji-text {
+.emoji:active .emoji-text {
   transform: scale(1.05);
 }
 
+/* Keep color coding for text */
 .emoji-very-bad .emoji-text {
   color: #dc2626;
 }
@@ -519,6 +405,7 @@ button {
   min-height: 56px;
   position: relative;
   overflow: hidden;
+  -webkit-tap-highlight-color: transparent;
 }
 
 button::before {
@@ -532,7 +419,7 @@ button::before {
   transition: left 0.5s ease;
 }
 
-button:hover::before {
+button:active::before {
   left: 100%;
 }
 
@@ -542,7 +429,7 @@ button:hover::before {
   border: 2px solid rgba(203, 213, 225, 0.5);
 }
 
-.skip-btn:hover {
+.skip-btn:active {
   background: linear-gradient(135deg, #e2e8f0 0%, #cbd5e1 100%);
   transform: translateY(-2px);
   box-shadow: var(--shadow-medium);
@@ -554,7 +441,7 @@ button:hover::before {
   box-shadow: var(--shadow-soft);
 }
 
-.submit-btn:hover {
+.submit-btn:active {
   background: linear-gradient(135deg, var(--primary-blue-dark) 0%, #0369a1 100%);
   transform: translateY(-2px);
   box-shadow: var(--shadow-medium);
@@ -567,7 +454,7 @@ button:hover::before {
   transform: none;
 }
 
-.submit-btn:disabled:hover {
+.submit-btn:disabled:active {
   transform: none;
 }
 
@@ -630,9 +517,10 @@ button:hover::before {
   transition: var(--transition);
   z-index: 1000;
   backdrop-filter: blur(10px);
+  -webkit-tap-highlight-color: transparent;
 }
 
-#backArrow:hover {
+#backArrow:active {
   background: linear-gradient(135deg, var(--primary-blue-dark) 0%, #2563eb 100%);
   transform: scale(1.1) translateX(-2px);
   box-shadow: var(--shadow-large);
@@ -834,6 +722,7 @@ button:hover::before {
   transition: var(--transition);
   position: relative;
   overflow: hidden;
+  -webkit-tap-highlight-color: transparent;
 }
 
 .continue-btn {
@@ -842,7 +731,7 @@ button:hover::before {
   box-shadow: var(--shadow-soft);
 }
 
-.continue-btn:hover {
+.continue-btn:active {
   background: linear-gradient(135deg, #0d9488 0%, #059669 100%);
   transform: translateY(-2px);
   box-shadow: var(--shadow-medium);
@@ -854,7 +743,7 @@ button:hover::before {
   box-shadow: var(--shadow-soft);
 }
 
-.restart-btn:hover {
+.restart-btn:active {
   background: linear-gradient(135deg, var(--primary-blue-dark) 0%, #0369a1 100%);
   transform: translateY(-2px);
   box-shadow: var(--shadow-medium);
