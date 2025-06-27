@@ -224,9 +224,9 @@ h1 {
 
 /* New emoji image styles */
 .emoji-img {
-  width: clamp(40px, 10vw, 70px);
-  height: clamp(40px, 10vw, 70px);
-  margin-bottom: 12px;
+  width: clamp(35px, 8vw, 50px);
+  height: clamp(35px, 8vw, 50px);
+  margin-bottom: 8px;
   transition: var(--transition);
   filter: drop-shadow(0 2px 8px rgba(0, 0, 0, 0.1));
   user-select: none;
